@@ -1,5 +1,6 @@
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useState } from "react";
+import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
@@ -52,7 +53,7 @@ const Navbar = () => {
             type="button"
           >
             {mobileMenu ? (
-              <X className="w-7 h-7" />
+              <RxCross1 className="w-7 h-7" />
             ) : (
               <Menu className="w-7 h-7" />
             )}
@@ -62,16 +63,16 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden absolute top-16 left-0 right-0 bg-white border-b border-gray-200 shadow-lg transition-all duration-300 ease-in-out ${
+        className={`md:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-xl transition-all duration-300 ease-in-out ${
           mobileMenu
             ? "translate-y-0 opacity-100 visible"
             : "-translate-y-full opacity-0 invisible"
         }`}
       >
-        <div className="flex flex-col items-center space-y-4 py-6">
+        <div className="flex flex-col justify-center items-center space-y-2 px-4 py-8">
           {links.map((link) => (
             <Link
-              className="flex items-center py-2 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 min-h-[44px] text-gray-700 hover:text-zinc-500 text-lg transition-all duration-300"
+              className="flex justify-center items-center hover:bg-gray-50 px-6 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 w-full max-w-xs min-h-[48px] text-gray-700 hover:text-zinc-500 text-lg transition-all duration-300 cursor-pointer"
               key={link.name}
               onClick={() => setMobileMenu(false)}
               to={link.path}
@@ -80,7 +81,7 @@ const Navbar = () => {
             </Link>
           ))}
           <Link
-            className="bg-black hover:bg-gray-800 mt-2 px-6 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 text-white transition-colors duration-300 cursor-pointer"
+            className="bg-black hover:bg-gray-800 mt-4 px-8 py-3.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 w-full max-w-xs min-h-[48px] text-white text-center transition-colors duration-300 cursor-pointer"
             onClick={() => setMobileMenu(false)}
             to="/signup"
           >
