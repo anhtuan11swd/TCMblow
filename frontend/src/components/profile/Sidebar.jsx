@@ -70,11 +70,9 @@ const Sidebar = ({ closeSideBar }) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 bg-white dark:bg-zinc-900 p-4 border border-zinc-200 dark:border-zinc-700 rounded-xl min-h-[400px]">
+    <div className="flex flex-col gap-4 bg-white p-4 border border-zinc-200 rounded-xl min-h-[400px]">
       {/* Tiêu đề Sidebar */}
-      <h2 className="mb-2 font-bold text-zinc-900 dark:text-white text-xl">
-        Menu
-      </h2>
+      <h2 className="mb-2 font-bold text-zinc-900 text-xl">Menu</h2>
 
       {/* Danh sách liên kết điều hướng */}
       <nav className="flex flex-col gap-2">
@@ -84,9 +82,10 @@ const Sidebar = ({ closeSideBar }) => {
               `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ${
                 isActive
                   ? "bg-zinc-900 text-white font-semibold"
-                  : "text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:font-semibold"
+                  : "text-zinc-600 hover:bg-zinc-100 hover:font-semibold"
               }`
             }
+            end={link.path === "/profile"}
             key={link.path}
             onClick={() => closeSideBar?.()}
             to={link.path}

@@ -31,12 +31,12 @@ const BlogCard = ({ item, slice = 300 }) => {
         {/* Phần nội dung - 4/6 chiều rộng trên desktop */}
         <div className="flex flex-col justify-between w-full lg:w-4/6">
           {/* Tiêu đề */}
-          <h3 className="mb-2 font-semibold text-gray-900 dark:text-white text-xl">
+          <h3 className="mb-2 font-semibold text-gray-900 text-xl">
             {item.title}
           </h3>
 
           {/* Mô tả với cắt ngắn theo slice prop */}
-          <p className="mb-4 text-gray-600 dark:text-gray-300 leading-relaxed">
+          <p className="mb-4 text-gray-600 leading-relaxed">
             {item.description.slice(0, slice)}
             {item.description.length > slice && "..."}
           </p>

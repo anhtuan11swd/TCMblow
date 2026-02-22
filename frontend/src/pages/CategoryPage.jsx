@@ -260,12 +260,10 @@ const CategoryPage = () => {
       {/* Header của danh mục */}
       <section className="py-8">
         <div className="mb-8">
-          <h1 className="mb-2 font-bold text-gray-900 dark:text-white text-3xl">
+          <h1 className="mb-2 font-bold text-gray-900 text-3xl">
             {category.displayName}
           </h1>
-          <p className="text-gray-600 dark:text-gray-300 text-lg">
-            {category.description}
-          </p>
+          <p className="text-gray-600 text-lg">{category.description}</p>
         </div>
 
         {/* Đường phân cách */}
@@ -275,22 +273,20 @@ const CategoryPage = () => {
       {/* Danh sách bài viết */}
       <section className="py-4">
         {/* Tiêu đề phần */}
-        <h2 className="mb-6 font-semibold text-gray-800 dark:text-white text-xl">
+        <h2 className="mb-6 font-semibold text-gray-800 text-xl">
           Bài viết trong {category.displayName}
         </h2>
 
-        {/* Container thẻ Blog với padding */}
-        <div className="p-4">
-          {filteredBlogs.length > 0 ? (
-            filteredBlogs.map((item) => <BlogCard item={item} key={item.id} />)
-          ) : (
-            <div className="py-12 text-center">
-              <p className="text-gray-500 dark:text-gray-400 text-lg">
-                Chưa có bài viết nào trong danh mục này.
-              </p>
-            </div>
-          )}
-        </div>
+        {/* Danh sách BlogCard */}
+        {filteredBlogs.length > 0 ? (
+          filteredBlogs.map((item) => <BlogCard item={item} key={item.id} />)
+        ) : (
+          <div className="py-12 text-center">
+            <p className="text-gray-500 text-lg">
+              Chưa có bài viết nào trong danh mục này.
+            </p>
+          </div>
+        )}
       </section>
     </div>
   );

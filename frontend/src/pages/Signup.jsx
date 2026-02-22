@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Signup = () => {
@@ -20,7 +21,14 @@ const Signup = () => {
 
   return (
     <div className="flex justify-center items-center bg-gray-100 h-screen">
-      <div className="bg-white shadow-2xl p-8 md:p-12 rounded-lg w-[80%] md:w-[60%] lg:w-[40%]">
+      <div className="relative bg-white shadow-2xl p-8 md:p-12 rounded-lg w-[80%] md:w-[60%] lg:w-[40%]">
+        <Link
+          aria-label="Quay về trang chủ"
+          className="top-4 right-4 absolute flex justify-center items-center hover:bg-gray-100 rounded-full w-10 h-10 text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
+          to="/"
+        >
+          <FaHome className="w-5 h-5" />
+        </Link>
         <h1 className="mb-2 font-bold text-2xl text-center">Chào mừng</h1>
         <span className="block mb-6 text-gray-600 text-center">
           Đăng ký tài khoản mới

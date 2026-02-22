@@ -31,9 +31,7 @@ const savedBlogs = [
 const Favorites = () => {
   return (
     <div className="p-6">
-      <h1 className="mb-6 font-bold text-zinc-900 dark:text-white text-3xl">
-        Bài viết đã lưu
-      </h1>
+      <h1 className="mb-6 font-bold text-zinc-900 text-3xl">Bài viết đã lưu</h1>
 
       {savedBlogs.length > 0 ? (
         <div className="space-y-4">
@@ -45,7 +43,7 @@ const Favorites = () => {
         <div className="py-12 text-center">
           <svg
             aria-hidden="true"
-            className="mx-auto mb-4 w-16 h-16 text-zinc-300 dark:text-zinc-600"
+            className="mx-auto mb-4 w-16 h-16 text-zinc-300"
             fill="none"
             stroke="currentColor"
             strokeLinecap="round"
@@ -56,10 +54,8 @@ const Favorites = () => {
           >
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
-          <p className="text-zinc-500 dark:text-zinc-400 text-lg">
-            Chưa có bài viết đã lưu nào
-          </p>
-          <p className="mt-2 text-zinc-400 dark:text-zinc-500">
+          <p className="text-zinc-500 text-lg">Chưa có bài viết đã lưu nào</p>
+          <p className="mt-2 text-zinc-400">
             Hãy lưu các bài viết bạn quan tâm
           </p>
         </div>

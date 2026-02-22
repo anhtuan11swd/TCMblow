@@ -111,20 +111,16 @@ const AllBlogs = () => {
 
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-      {" "}
       <section className="py-4">
         {/* Tiêu đề phần - All Blogs */}
-        <h2 className="mb-6 font-bold text-gray-900 dark:text-white text-2xl">
+        <h2 className="mb-6 font-bold text-gray-900 text-2xl">
           Tất cả bài viết
         </h2>
 
-        {/* Container thẻ Blog với padding */}
-        <div className="p-4">
-          {/* Duyệt qua dữ liệu và render BlogCard cho mỗi bài viết */}
-          {data.map((item) => (
-            <BlogCard item={item} key={item.id} />
-          ))}
-        </div>
+        {/* Duyệt qua dữ liệu và render BlogCard cho mỗi bài viết */}
+        {data.map((item) => (
+          <BlogCard item={item} key={item.id} />
+        ))}
       </section>
     </div>
   );

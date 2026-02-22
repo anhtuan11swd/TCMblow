@@ -6,7 +6,7 @@ const Description = () => {
   return (
     <div className="mx-auto px-4 py-8 max-w-4xl">
       {/* Tiêu đề blog - text-2xl, font-semibold */}
-      <h1 className="font-semibold text-gray-900 dark:text-white text-2xl">
+      <h1 className="font-semibold text-gray-900 text-2xl">
         Tiêu đề bài viết - ID: {id}
       </h1>
 
@@ -18,7 +18,7 @@ const Description = () => {
       />
 
       {/* Nội dung chi tiết - Lorem Ipsum với margin-top-4 */}
-      <div className="mt-4 text-gray-700 dark:text-gray-300 leading-relaxed">
+      <div className="mt-4 text-gray-700 leading-relaxed">
         <p className="mt-4">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad

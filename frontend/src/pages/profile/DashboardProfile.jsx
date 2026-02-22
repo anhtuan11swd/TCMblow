@@ -65,29 +65,29 @@ const DashboardProfile = () => {
 
         {/* Thông tin người dùng */}
         <div className="flex flex-col items-center md:items-start md:text-left text-center">
-          <h2 className="font-semibold text-zinc-900 dark:text-white text-2xl md:text-4xl lg:text-5xl">
+          <h2 className="font-semibold text-zinc-900 text-2xl md:text-4xl lg:text-5xl">
             {user.username}
           </h2>
-          <p className="mt-1 text-zinc-700 dark:text-zinc-400">{user.email}</p>
+          <p className="mt-1 text-zinc-700">{user.email}</p>
         </div>
       </div>
 
-      <h1 className="mb-4 font-bold text-zinc-900 dark:text-white text-2xl md:text-3xl">
+      <h1 className="mb-4 font-bold text-zinc-900 text-2xl md:text-3xl">
         Xin chào!
       </h1>
-      <p className="text-zinc-600 dark:text-zinc-300 text-lg">
+      <p className="text-zinc-600 text-lg">
         Chào mừng đến với trang cá nhân của bạn. Tại đây bạn có thể quản lý các
         bài viết yêu thích và bài viết đã thích.
       </p>
 
       {/* Thống kê nhanh */}
       <div className="gap-6 grid grid-cols-1 md:grid-cols-3 mt-8">
-        <div className="bg-white dark:bg-zinc-800 p-6 border border-zinc-200 dark:border-zinc-700 rounded-xl">
+        <div className="bg-white p-6 border border-zinc-200 rounded-xl">
           <div className="flex items-center gap-4">
-            <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
+            <div className="bg-blue-100 p-3 rounded-lg">
               <svg
                 aria-hidden="true"
-                className="w-6 h-6 text-blue-600 dark:text-blue-400"
+                className="w-6 h-6 text-blue-600"
                 fill="none"
                 stroke="currentColor"
                 strokeLinecap="round"
@@ -100,22 +100,18 @@ const DashboardProfile = () => {
               </svg>
             </div>
             <div>
-              <p className="text-zinc-500 dark:text-zinc-400 text-sm">
-                Bài viết đã lưu
-              </p>
-              <p className="font-bold text-zinc-900 dark:text-white text-2xl">
-                0
-              </p>
+              <p className="text-zinc-500 text-sm">Bài viết đã lưu</p>
+              <p className="font-bold text-zinc-900 text-2xl">0</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-800 p-6 border border-zinc-200 dark:border-zinc-700 rounded-xl">
+        <div className="bg-white p-6 border border-zinc-200 rounded-xl">
           <div className="flex items-center gap-4">
-            <div className="bg-green-100 dark:bg-green-900 p-3 rounded-lg">
+            <div className="bg-green-100 p-3 rounded-lg">
               <svg
                 aria-hidden="true"
-                className="w-6 h-6 text-green-600 dark:text-green-400"
+                className="w-6 h-6 text-green-600"
                 fill="currentColor"
                 stroke="currentColor"
                 strokeLinecap="round"
@@ -128,22 +124,18 @@ const DashboardProfile = () => {
               </svg>
             </div>
             <div>
-              <p className="text-zinc-500 dark:text-zinc-400 text-sm">
-                Bài viết đã thích
-              </p>
-              <p className="font-bold text-zinc-900 dark:text-white text-2xl">
-                0
-              </p>
+              <p className="text-zinc-500 text-sm">Bài viết đã thích</p>
+              <p className="font-bold text-zinc-900 text-2xl">0</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-800 p-6 border border-zinc-200 dark:border-zinc-700 rounded-xl">
+        <div className="bg-white p-6 border border-zinc-200 rounded-xl">
           <div className="flex items-center gap-4">
-            <div className="bg-purple-100 dark:bg-purple-900 p-3 rounded-lg">
+            <div className="bg-purple-100 p-3 rounded-lg">
               <svg
                 aria-hidden="true"
-                className="w-6 h-6 text-purple-600 dark:text-purple-400"
+                className="w-6 h-6 text-purple-600"
                 fill="none"
                 stroke="currentColor"
                 strokeLinecap="round"
@@ -157,23 +149,17 @@ const DashboardProfile = () => {
               </svg>
             </div>
             <div>
-              <p className="text-zinc-500 dark:text-zinc-400 text-sm">
-                Tổng số bài viết
-              </p>
-              <p className="font-bold text-zinc-900 dark:text-white text-2xl">
-                0
-              </p>
+              <p className="text-zinc-500 text-sm">Tổng số bài viết</p>
+              <p className="font-bold text-zinc-900 text-2xl">0</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Hướng dẫn sử dụng */}
-      <div className="bg-zinc-50 dark:bg-zinc-800/50 mt-8 p-6 rounded-xl">
-        <h2 className="mb-4 font-semibold text-zinc-900 dark:text-white text-xl">
-          Hướng dẫn
-        </h2>
-        <ul className="space-y-2 text-zinc-600 dark:text-zinc-300">
+      <div className="bg-zinc-50 mt-8 p-6 rounded-xl">
+        <h2 className="mb-4 font-semibold text-zinc-900 text-xl">Hướng dẫn</h2>
+        <ul className="space-y-2 text-zinc-600">
           <li className="flex items-center gap-2">
             <span className="bg-blue-500 rounded-full w-2 h-2" />
             Sử dụng menu bên trái để điều hướng
@@ -190,23 +176,23 @@ const DashboardProfile = () => {
       </div>
 
       {/* Đường kẻ ngang phân cách */}
-      <hr className="my-8 border-zinc-300 dark:border-zinc-700" />
+      <hr className="my-8 border-zinc-300" />
 
       {/* Form Thay đổi Mật khẩu */}
-      <h1 className="mb-4 font-semibold text-zinc-900 dark:text-white text-2xl">
+      <h1 className="mb-4 font-semibold text-zinc-900 text-2xl">
         Thay đổi mật khẩu tài khoản
       </h1>
       <form className="flex flex-col gap-4 w-full max-w-md">
         {/* Mật khẩu hiện tại */}
         <div className="flex flex-col gap-1">
           <label
-            className="font-medium text-gray-700 dark:text-zinc-300 text-sm"
+            className="font-medium text-gray-700 text-sm"
             htmlFor="currentPassword"
           >
             Mật khẩu hiện tại của bạn
           </label>
           <input
-            className="dark:bg-zinc-800 px-3 py-2 border border-zinc-400 focus:border-blue-500 dark:border-zinc-600 rounded outline-none w-full dark:text-white transition-colors"
+            className="px-3 py-2 border border-zinc-400 focus:border-blue-500 rounded outline-none w-full transition-colors"
             id="currentPassword"
             name="currentPassword"
             placeholder="Nhập mật khẩu hiện tại"
@@ -218,13 +204,13 @@ const DashboardProfile = () => {
         {/* Mật khẩu mới */}
         <div className="flex flex-col gap-1 mt-4">
           <label
-            className="font-medium text-gray-700 dark:text-zinc-300 text-sm"
+            className="font-medium text-gray-700 text-sm"
             htmlFor="newPassword"
           >
             Mật khẩu mới
           </label>
           <input
-            className="dark:bg-zinc-800 px-3 py-2 border border-zinc-400 focus:border-blue-500 dark:border-zinc-600 rounded outline-none w-full dark:text-white transition-colors"
+            className="px-3 py-2 border border-zinc-400 focus:border-blue-500 rounded outline-none w-full transition-colors"
             id="newPassword"
             name="newPassword"
             placeholder="Nhập mật khẩu mới"
@@ -236,13 +222,13 @@ const DashboardProfile = () => {
         {/* Xác nhận mật khẩu mới */}
         <div className="flex flex-col gap-1 mt-4">
           <label
-            className="font-medium text-gray-700 dark:text-zinc-300 text-sm"
+            className="font-medium text-gray-700 text-sm"
             htmlFor="confirmNewPassword"
           >
             Xác nhận mật khẩu mới
           </label>
           <input
-            className="dark:bg-zinc-800 px-3 py-2 border border-zinc-400 focus:border-blue-500 dark:border-zinc-600 rounded outline-none w-full dark:text-white transition-colors"
+            className="px-3 py-2 border border-zinc-400 focus:border-blue-500 rounded outline-none w-full transition-colors"
             id="confirmNewPassword"
             name="confirmNewPassword"
             placeholder="Nhập lại mật khẩu mới"

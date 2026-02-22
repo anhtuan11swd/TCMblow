@@ -23,7 +23,7 @@ const likedBlogs = [
 const LikedBlogs = () => {
   return (
     <div className="p-6">
-      <h1 className="mb-6 font-bold text-zinc-900 dark:text-white text-3xl">
+      <h1 className="mb-6 font-bold text-zinc-900 text-3xl">
         Bài viết đã thích
       </h1>
 
@@ -37,7 +37,7 @@ const LikedBlogs = () => {
         <div className="py-12 text-center">
           <svg
             aria-hidden="true"
-            className="mx-auto mb-4 w-16 h-16 text-zinc-300 dark:text-zinc-600"
+            className="mx-auto mb-4 w-16 h-16 text-zinc-300"
             fill="currentColor"
             stroke="currentColor"
             strokeLinecap="round"
@@ -48,10 +48,8 @@ const LikedBlogs = () => {
           >
             <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
           </svg>
-          <p className="text-zinc-500 dark:text-zinc-400 text-lg">
-            Chưa có bài viết đã thích nào
-          </p>
-          <p className="mt-2 text-zinc-400 dark:text-zinc-500">
+          <p className="text-zinc-500 text-lg">Chưa có bài viết đã thích nào</p>
+          <p className="mt-2 text-zinc-400">
             Hãy like các bài viết bạn quan tâm
           </p>
         </div>

@@ -44,17 +44,14 @@ const RecentBlogs = () => {
   return (
     <section className="py-4">
       {/* Tiêu đề phần */}
-      <h2 className="mb-6 font-bold text-gray-900 dark:text-white text-2xl">
+      <h2 className="mb-6 font-bold text-gray-900 text-2xl">
         Bài viết mới nhất
       </h2>
 
-      {/* Container thẻ Blog với padding */}
-      <div className="p-4">
-        {/* Duyệt qua dữ liệu và render BlogCard cho mỗi bài viết */}
-        {data.map((item) => (
-          <BlogCard item={item} key={item.id} />
-        ))}
-      </div>
+      {/* Duyệt qua dữ liệu và render BlogCard cho mỗi bài viết */}
+      {data.map((item) => (
+        <BlogCard item={item} key={item.id} />
+      ))}
     </section>
   );
 };
