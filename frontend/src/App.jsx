@@ -16,6 +16,7 @@ import DashboardProfile from "./pages/profile/DashboardProfile";
 import Favorites from "./pages/profile/Favorites";
 import LikedBlogs from "./pages/profile/LikedBlogs";
 import Signup from "./pages/Signup";
+import UpdateBlog from "./pages/UpdateBlog";
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
         <Route element={<AdminDashboard />} index />
         <Route element={<AddBlog />} path="add-blogs" />
         <Route element={<EditBlogs />} path="edit-blogs" />
+        <Route element={<UpdateBlog />} path="update-blog/:id" />
       </Route>
     </Routes>
   );

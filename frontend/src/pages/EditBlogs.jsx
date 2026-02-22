@@ -1,3 +1,5 @@
+import BlogList from "../components/admin/BlogList";
+
 /**
  * EditBlogs - Trang quản lý bài viết cho admin
  * Tái sử dụng component AllBlogs để hiển thị danh sách bài viết
@@ -40,12 +42,6 @@ const EditBlogs = () => {
     },
   ];
 
-  // Hàm xử lý khi nhấn nút chỉnh sửa
-  const handleEdit = (blog) => {
-    // TODO: Kết nối với API để chỉnh sửa bài viết
-    console.log("Chỉnh sửa bài viết:", blog);
-  };
-
   // Hàm xử lý khi nhấn nút xóa
   const handleDelete = (blogId) => {
     // TODO: Kết nối với API để xóa bài viết
@@ -75,89 +71,8 @@ const EditBlogs = () => {
           </h2>
         </div>
 
-        {/* Container danh sách bài viết */}
-        <div className="space-y-4">
-          {blogData.map((item) => (
-            <div
-              className="bg-white shadow-sm hover:shadow-md p-4 border border-zinc-200 rounded-lg transition-shadow duration-300"
-              key={item.id}
-            >
-              <div className="flex lg:flex-row flex-col gap-4">
-                {/* Hình ảnh */}
-                <div className="w-full lg:w-1/6">
-                  <img
-                    alt={item.title}
-                    className="rounded-lg w-full h-32 object-cover"
-                    src={item.IMG}
-                  />
-                </div>
-
-                {/* Nội dung */}
-                <div className="flex flex-col flex-1 justify-between">
-                  <div>
-                    <h3 className="mb-2 font-semibold text-zinc-800 text-lg">
-                      {item.title}
-                    </h3>
-                    <p className="text-zinc-500 text-sm line-clamp-2">
-                      {item.description}
-                    </p>
-                    <p className="mt-2 text-zinc-400 text-xs">
-                      Ngày đăng: {item.date}
-                    </p>
-                  </div>
-
-                  {/* Nút hành động */}
-                  <div className="flex gap-2 mt-4">
-                    <button
-                      className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg font-medium text-white text-sm transition-colors duration-200"
-                      onClick={() => handleEdit(item)}
-                      type="button"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <title>Chỉnh sửa</title>
-                        <path
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                        />
-                      </svg>
-                      Chỉnh sửa
-                    </button>
-                    <button
-                      className="flex items-center gap-2 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-medium text-white text-sm transition-colors duration-200"
-                      onClick={() => handleDelete(item.id)}
-                      type="button"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <title>Xóa</title>
-                        <path
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                        />
-                      </svg>
-                      Xóa
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Container danh sách bài viết - Sử dụng BlogList component */}
+        <BlogList blogs={blogData} onDelete={handleDelete} />
       </div>
     </div>
   );

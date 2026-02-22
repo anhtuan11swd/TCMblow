@@ -1,7 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AllBlogs from "./AllBlogs";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminInfo");
+    navigate("/admin-login");
+  };
   const stats = [
     {
       color: "bg-blue-500",
@@ -218,6 +225,18 @@ const AdminDashboard = () => {
         <div className="bg-zinc-50 p-4 rounded-xl">
           <AllBlogs />
         </div>
+      </div>
+
+      {/* Nút Đăng xuất */}
+      <div className="mt-8">
+        <button
+          aria-label="Đăng xuất khỏi hệ thống"
+          className="bg-black hover:bg-zinc-800 px-4 py-2 rounded w-full font-medium text-white transition-colors duration-200 cursor-pointer"
+          onClick={handleLogout}
+          type="button"
+        >
+          Đăng xuất
+        </button>
       </div>
     </div>
   );
