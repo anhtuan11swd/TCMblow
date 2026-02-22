@@ -63,7 +63,7 @@ const sidebarLinks = [
   },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ closeSideBar }) => {
   const handleLogout = () => {
     console.log("Đăng xuất...");
     // Thêm logic đăng xuất tại đây
@@ -88,6 +88,7 @@ const Sidebar = () => {
               }`
             }
             key={link.path}
+            onClick={() => closeSideBar?.()}
             to={link.path}
           >
             {link.icon}
