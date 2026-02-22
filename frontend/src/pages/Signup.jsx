@@ -1,5 +1,109 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
 const Signup = () => {
-  return <div>Signup</div>;
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+    username: "",
+  });
+
+  const change = (e) => {
+    const { name, value } = e.target;
+    setInputs({ ...inputs, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Signup data:", inputs);
+  };
+
+  return (
+    <div className="flex justify-center items-center bg-gray-100 h-screen">
+      <div className="bg-white shadow-2xl p-8 md:p-12 rounded-lg w-[80%] md:w-[60%] lg:w-[40%]">
+        <h1 className="mb-2 font-bold text-2xl text-center">Chào mừng</h1>
+        <span className="block mb-6 text-gray-600 text-center">
+          Đăng ký tài khoản mới
+        </span>
+
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-1">
+            <label
+              className="font-medium text-gray-700 text-sm"
+              htmlFor="username"
+            >
+              Username
+            </label>
+            <input
+              className="px-3 py-2 border border-zinc-400 focus:border-blue-500 rounded outline-none transition-colors"
+              id="username"
+              name="username"
+              onChange={change}
+              placeholder="Nhập tên người dùng của bạn"
+              required
+              type="text"
+              value={inputs.username}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label
+              className="font-medium text-gray-700 text-sm"
+              htmlFor="email"
+            >
+              Email
+            </label>
+            <input
+              className="px-3 py-2 border border-zinc-400 focus:border-blue-500 rounded outline-none transition-colors"
+              id="email"
+              name="email"
+              onChange={change}
+              placeholder="Nhập email của bạn"
+              required
+              type="email"
+              value={inputs.email}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label
+              className="font-medium text-gray-700 text-sm"
+              htmlFor="password"
+            >
+              Password
+            </label>
+            <input
+              className="px-3 py-2 border border-zinc-400 focus:border-blue-500 rounded outline-none transition-colors"
+              id="password"
+              name="password"
+              onChange={change}
+              placeholder="Nhập mật khẩu của bạn"
+              required
+              type="password"
+              value={inputs.password}
+            />
+          </div>
+
+          <button
+            className="bg-blue-600 hover:bg-blue-700 mt-4 py-2 rounded w-full font-medium text-white transition-all duration-300"
+            type="submit"
+          >
+            Đăng ký
+          </button>
+        </form>
+
+        <p className="mt-6 text-gray-600 text-center">
+          Đã có tài khoản?{" "}
+          <Link
+            className="font-medium text-blue-600 hover:text-blue-700"
+            to="/login"
+          >
+            Đăng nhập
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export default Signup;

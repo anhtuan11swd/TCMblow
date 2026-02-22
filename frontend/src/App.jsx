@@ -6,6 +6,9 @@ import AllBlogs from "./pages/AllBlogs";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
+import DashboardProfile from "./pages/profile/DashboardProfile";
+import Favorites from "./pages/profile/Favorites";
+import LikedBlogs from "./pages/profile/LikedBlogs";
 import Signup from "./pages/Signup";
 
 function App() {
@@ -16,7 +19,13 @@ function App() {
         <Route element={<Home />} index />
         <Route element={<AllBlogs />} path="blogs" />
         <Route element={<AdminDashboard />} path="admin" />
-        <Route element={<Profile />} path="profile" />
+
+        {/* Nested Routes cho Profile */}
+        <Route element={<Profile />} path="profile">
+          <Route element={<DashboardProfile />} index />
+          <Route element={<Favorites />} path="favorites" />
+          <Route element={<LikedBlogs />} path="liked-blogs" />
+        </Route>
       </Route>
 
       {/* Other Layout Routes - không có Navbar và Footer */}

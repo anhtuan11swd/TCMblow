@@ -1,6 +1,6 @@
 /**
  * BlogCard - Component tái sử dụng để hiển thị từng bài viết blog
- * Sử dụng trong cả RecentBlogs (trang chủ) và AllBlogs (trang danh sách blog)
+ * Sử dụng trong cả RecentBlogs (trang chủ), AllBlogs và trang Profile
  *
  * @param {Object} item - Dữ liệu bài viết blog
  * @param {string} item.id - Định danh duy nhất
@@ -8,8 +8,9 @@
  * @param {string} item.description - Mô tả blog
  * @param {string} item.IMG - URL hình ảnh
  * @param {string} item.date - Ngày xuất bản
+ * @param {number} slice - Số ký tự tối đa hiển thị (mặc định 300)
  */
-const BlogCard = ({ item }) => {
+const BlogCard = ({ item, slice = 300 }) => {
   return (
     <>
       {/* Thẻ Blog Container */}
@@ -30,10 +31,10 @@ const BlogCard = ({ item }) => {
             {item.title}
           </h3>
 
-          {/* Mô tả với cắt ngắn 300 ký tự */}
+          {/* Mô tả với cắt ngắn theo slice prop */}
           <p className="mb-4 text-gray-600 dark:text-gray-300 leading-relaxed">
-            {item.description.slice(0, 300)}
-            {item.description.length > 300 && "..."}
+            {item.description.slice(0, slice)}
+            {item.description.length > slice && "..."}
           </p>
 
           {/* Nút Đọc bài viết */}
