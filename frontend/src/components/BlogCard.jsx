@@ -11,6 +11,10 @@
  * @param {number} slice - Số ký tự tối đa hiển thị (mặc định 300)
  */
 const BlogCard = ({ item, slice = 300 }) => {
+  // Tạo ID từ item.id hoặc từ title để giả lập từ MongoDB
+  const blogId =
+    item.id || item.title?.toLowerCase().replace(/\s+/g, "-") || "default-id";
+
   return (
     <>
       {/* Thẻ Blog Container */}
@@ -40,7 +44,7 @@ const BlogCard = ({ item, slice = 300 }) => {
           {/* Nút Đọc bài viết */}
           <a
             className="inline-block bg-blue-500 hover:bg-blue-700 px-6 py-2 rounded w-fit font-medium text-white transition-all duration-800 cursor-pointer"
-            href={`/blog/${item.id}`}
+            href={`/description/${blogId}`}
           >
             Đọc bài viết
           </a>

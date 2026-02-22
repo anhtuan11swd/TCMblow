@@ -4,6 +4,14 @@ const categories = [
   {
     color: "bg-green-200",
     hoverColor: "hover:bg-green-300",
+    id: "dsa",
+    label: "Cấu trúc dữ liệu & Giải thuật",
+    name: "DSA",
+    path: "/dsa",
+  },
+  {
+    color: "bg-blue-300",
+    hoverColor: "hover:bg-blue-400",
     id: "ds",
     label: "Khoa học dữ liệu",
     name: "KHD",

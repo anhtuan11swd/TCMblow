@@ -1,0 +1,111 @@
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+const AdminLogin = () => {
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  const change = (e) => {
+    const { name, value } = e.target;
+    setInputs({ ...inputs, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Admin login logic - chuyển hướng đến dashboard
+    if (inputs.email && inputs.password) {
+      navigate("/admin-dashboard");
+    }
+  };
+
+  return (
+    <div className="flex justify-center items-center bg-gradient-to-br from-slate-100 to-zinc-200 h-screen">
+      <div className="bg-white shadow-2xl p-8 md:p-12 rounded-xl w-[90%] md:w-[50%] lg:w-[35%]">
+        <div className="mb-8 text-center">
+          <div className="inline-flex justify-center items-center bg-zinc-100 mb-4 rounded-full w-16 h-16">
+            <svg
+              aria-label="Biểu tượng khóa"
+              className="w-8 h-8 text-zinc-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+              />
+            </svg>
+          </div>
+          <h1 className="mb-2 font-bold text-zinc-800 text-3xl">Admin Login</h1>
+          <span className="block text-zinc-500">
+            Đăng nhập vào hệ thống quản trị
+          </span>
+        </div>
+
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-2">
+            <label
+              className="font-semibold text-zinc-700 text-sm"
+              htmlFor="email"
+            >
+              Email
+            </label>
+            <input
+              className="bg-zinc-50 focus:bg-white px-4 py-3 border border-zinc-300 focus:border-blue-600 rounded-lg outline-none transition-all duration-300"
+              id="email"
+              name="email"
+              onChange={change}
+              placeholder="Nhập email quản trị"
+              required
+              type="email"
+              value={inputs.email}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label
+              className="font-semibold text-zinc-700 text-sm"
+              htmlFor="password"
+            >
+              Mật khẩu
+            </label>
+            <input
+              className="bg-zinc-50 focus:bg-white px-4 py-3 border border-zinc-300 focus:border-blue-600 rounded-lg outline-none transition-all duration-300"
+              id="password"
+              name="password"
+              onChange={change}
+              placeholder="Nhập mật khẩu"
+              required
+              type="password"
+              value={inputs.password}
+            />
+          </div>
+
+          <button
+            className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl mt-4 py-3 rounded-lg w-full font-semibold text-white transition-all duration-300"
+            type="submit"
+          >
+            Đăng nhập
+          </button>
+        </form>
+
+        <div className="mt-6 text-center">
+          <Link
+            className="text-zinc-500 hover:text-zinc-700 text-sm transition-colors duration-300"
+            to="/login"
+          >
+            ← Quay lại trang đăng nhập người dùng
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminLogin;
