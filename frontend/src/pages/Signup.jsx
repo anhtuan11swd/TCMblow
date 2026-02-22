@@ -1,6 +1,9 @@
+import axios from "axios";
 import { useState } from "react";
-import { FaHome } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaEye, FaEyeSlash, FaHome } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Signup = () => {
   const [inputs, setInputs] = useState({
@@ -9,18 +12,37 @@ const Signup = () => {
     username: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
+
   const change = (e) => {
     const { name, value } = e.target;
     setInputs({ ...inputs, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Signup data:", inputs);
+    try {
+      await axios.post("http://localhost:1000/api/v1/signup", inputs, {
+        withCredentials: true,
+      });
+      toast.success("Đăng ký thành công!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Đăng ký thất bại, vui lòng thử lại",
+      );
+    } finally {
+      setInputs({ email: "", password: "", username: "" });
+    }
   };
 
   return (
     <div className="flex justify-center items-center bg-gray-100 h-screen">
+      <ToastContainer position="top-center" />
       <div className="relative bg-white shadow-2xl p-8 md:p-12 rounded-lg w-[80%] md:w-[60%] lg:w-[40%]">
         <Link
           aria-label="Quay về trang chủ"
@@ -80,16 +102,25 @@ const Signup = () => {
             >
               Password
             </label>
-            <input
-              className="px-3 py-2 border border-zinc-400 focus:border-blue-500 rounded outline-none transition-colors"
-              id="password"
-              name="password"
-              onChange={change}
-              placeholder="Nhập mật khẩu của bạn"
-              required
-              type="password"
-              value={inputs.password}
-            />
+            <div className="relative">
+              <input
+                className="px-3 py-2 pr-10 border border-zinc-400 focus:border-blue-500 rounded outline-none w-full transition-colors"
+                id="password"
+                name="password"
+                onChange={change}
+                placeholder="Nhập mật khẩu của bạn"
+                required
+                type={showPassword ? "text" : "password"}
+                value={inputs.password}
+              />
+              <button
+                className="top-1/2 right-3 absolute text-gray-500 hover:text-gray-700 -translate-y-1/2"
+                onClick={() => setShowPassword(!showPassword)}
+                type="button"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
           </div>
 
           <button

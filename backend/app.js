@@ -1,7 +1,9 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import connectDB from "./connection.js";
+import userAPI from "./routes/user.js";
 
 dotenv.config();
 
@@ -10,8 +12,16 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 1000;
 
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:5173",
+  }),
+);
+app.use(cookieParser());
 app.use(express.json());
+
+app.use("/api/v1", userAPI);
 
 app.get("/", (_req, res) => {
   res.send("xin chào từ phía server");
