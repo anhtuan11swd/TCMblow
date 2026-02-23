@@ -4,7 +4,7 @@ import User from "../models/User.js";
 
 export const checkCookie = async (req, res) => {
   try {
-    const token = req.cookies.blogsAppTCM;
+    const token = req.cookies.blogAppTCM;
     if (token) {
       return res.status(200).json({ valid: true });
     }
@@ -16,7 +16,7 @@ export const checkCookie = async (req, res) => {
 
 export const logoutUser = async (_req, res) => {
   try {
-    res.clearCookie("blogsAppTCM", {
+    res.clearCookie("blogAppTCM", {
       httpOnly: true,
       sameSite: "strict",
       secure: true,
@@ -111,7 +111,7 @@ export const loginUser = async (req, res) => {
       { expiresIn: "30d" },
     );
 
-    res.cookie("blogsAppTCM", token, {
+    res.cookie("blogAppTCM", token, {
       httpOnly: true,
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       sameSite: "strict",
@@ -132,5 +132,68 @@ export const loginUser = async (req, res) => {
       error: error.message,
       message: "lỗi server",
     });
+  }
+};
+
+export const getProfileData = async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+    }
+
+    const { password, ...safeUserData } = user.toObject();
+
+    return res.status(200).json({ user: safeUserData });
+  } catch (_error) {
+    return res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+export const changeUserPassword = async (req, res) => {
+  try {
+    const { password, newPass, confirmNewPass } = req.body;
+
+    // Kiểm tra các trường bắt buộc
+    if (!password || !newPass || !confirmNewPass) {
+      return res
+        .status(400)
+        .json({ message: "Tất cả các trường đều bắt buộc" });
+    }
+
+    // Lấy thông tin người dùng từ middleware
+    const user = req.user;
+
+    // So sánh mật khẩu hiện tại với mật khẩu trong DB
+    const isMatch = await bcryptjs.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Mật khẩu hiện tại không đúng" });
+    }
+
+    // Kiểm tra mật khẩu mới và xác nhận mật khẩu có khớp nhau không
+    if (newPass !== confirmNewPass) {
+      return res.status(400).json({ message: "Mật khẩu mới không khớp" });
+    }
+
+    // Validate độ dài mật khẩu mới
+    if (newPass.length < 6) {
+      return res
+        .status(400)
+        .json({ message: "Mật khẩu phải có ít nhất 6 ký tự" });
+    }
+
+    // Mã hóa mật khẩu mới với 10 vòng lặp
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(newPass, salt);
+
+    // Cập nhật mật khẩu trong DB
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Change password error:", error);
+    return res.status(500).json({ message: "Lỗi server" });
   }
 };

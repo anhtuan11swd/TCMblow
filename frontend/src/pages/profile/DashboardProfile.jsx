@@ -1,16 +1,51 @@
-import { useState } from "react";
-import { FaUser } from "react-icons/fa";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DashboardProfile = () => {
+  // Lấy backend URL từ Redux store
+  const backendLink = useSelector((state) => state.production.link);
+
+  // State quản lý dữ liệu người dùng
+  const [userData, setUserData] = useState(null);
+
   // State for avatar preview
   const [avatarPreview, setAvatarPreview] = useState(null);
 
-  // Mock user data - sẽ được thay thế bằng dữ liệu thực từ API
-  const user = {
-    avatar: null, // Thay đổi thành URL ảnh thực tế nếu có
-    email: "user@example.com",
-    username: "The Code Master",
-  };
+  // State quản lý dữ liệu mật khẩu
+  const [passwords, setPasswords] = useState({
+    confirmNewPass: "",
+    newPass: "",
+    password: "",
+  });
+
+  // State quản lý hiển thị mật khẩu
+  const [showPasswords, setShowPasswords] = useState({
+    confirm: false,
+    current: false,
+    new: false,
+  });
+
+  // Gọi API lấy dữ liệu profile khi component mount
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await axios.get(
+          `${backendLink}/api/v1/user/get-profile-data`,
+          { withCredentials: true },
+        );
+        // Backend trả về { user: safeUserData }
+        setUserData(response.data.user);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu profile:", error);
+      }
+    };
+
+    fetchProfileData();
+  }, [backendLink]);
 
   // Handle avatar change
   const handleAvatarChange = (event) => {
@@ -18,6 +53,50 @@ const DashboardProfile = () => {
     if (file) {
       const previewUrl = URL.createObjectURL(file);
       setAvatarPreview(previewUrl);
+    }
+  };
+
+  // Cập nhật state passwords khi người dùng nhập liệu
+  const changePass = (e) => {
+    const { name, value } = e.target;
+    setPasswords((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Toggle hiển thị mật khẩu
+  const toggleShowPassword = (field) => {
+    setShowPasswords((prev) => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  };
+
+  // Gửi yêu cầu đổi mật khẩu
+  const handlePass = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.patch(
+        `${backendLink}/api/v1/user/change-user-password`,
+        passwords,
+        { withCredentials: true },
+      );
+
+      if (response.status === 200) {
+        toast.success("Đổi mật khẩu thành công!");
+        // Xóa trống các trường nhập liệu sau khi thành công
+        setPasswords({
+          confirmNewPass: "",
+          newPass: "",
+          password: "",
+        });
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Đổi mật khẩu thất bại";
+      toast.error(errorMessage);
     }
   };
 
@@ -34,11 +113,11 @@ const DashboardProfile = () => {
                 className="w-full h-full object-cover"
                 src={avatarPreview}
               />
-            ) : user.avatar ? (
+            ) : userData?.avatar ? (
               <img
                 alt="Avatar"
                 className="w-full h-full object-cover"
-                src={user.avatar}
+                src={userData.avatar}
               />
             ) : (
               <FaUser className="text-[12vh] text-zinc-600" />
@@ -63,13 +142,15 @@ const DashboardProfile = () => {
           </div>
         </div>
 
-        {/* Thông tin người dùng */}
-        <div className="flex flex-col items-center md:items-start md:text-left text-center">
-          <h2 className="font-semibold text-zinc-900 text-2xl md:text-4xl lg:text-5xl">
-            {user.username}
-          </h2>
-          <p className="mt-1 text-zinc-700">{user.email}</p>
-        </div>
+        {/* Thông tin người dùng - chỉ hiển thị khi userData đã sẵn sàng */}
+        {userData && (
+          <div className="flex flex-col items-center md:items-start md:text-left text-center">
+            <h2 className="font-semibold text-zinc-900 text-2xl md:text-4xl lg:text-5xl">
+              {userData.username}
+            </h2>
+            <p className="mt-1 text-zinc-700">{userData.email}</p>
+          </div>
+        )}
       </div>
 
       <h1 className="mb-4 font-bold text-zinc-900 text-2xl md:text-3xl">
@@ -182,7 +263,10 @@ const DashboardProfile = () => {
       <h1 className="mb-4 font-semibold text-zinc-900 text-2xl">
         Thay đổi mật khẩu tài khoản
       </h1>
-      <form className="flex flex-col gap-4 w-full max-w-md">
+      <form
+        className="flex flex-col gap-4 w-full max-w-md"
+        onSubmit={handlePass}
+      >
         {/* Mật khẩu hiện tại */}
         <div className="flex flex-col gap-1">
           <label
@@ -191,14 +275,25 @@ const DashboardProfile = () => {
           >
             Mật khẩu hiện tại của bạn
           </label>
-          <input
-            className="px-3 py-2 border border-zinc-400 focus:border-blue-500 rounded outline-none w-full transition-colors"
-            id="currentPassword"
-            name="currentPassword"
-            placeholder="Nhập mật khẩu hiện tại"
-            required
-            type="password"
-          />
+          <div className="relative">
+            <input
+              className="px-3 py-2 pr-10 border border-zinc-400 focus:border-blue-500 rounded outline-none w-full transition-colors"
+              id="currentPassword"
+              name="password"
+              onChange={changePass}
+              placeholder="Nhập mật khẩu hiện tại"
+              required
+              type={showPasswords.current ? "text" : "password"}
+              value={passwords.password}
+            />
+            <button
+              className="top-1/2 right-3 absolute text-gray-500 hover:text-gray-700 -translate-y-1/2"
+              onClick={() => toggleShowPassword("current")}
+              type="button"
+            >
+              {showPasswords.current ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
         </div>
 
         {/* Mật khẩu mới */}
@@ -209,14 +304,25 @@ const DashboardProfile = () => {
           >
             Mật khẩu mới
           </label>
-          <input
-            className="px-3 py-2 border border-zinc-400 focus:border-blue-500 rounded outline-none w-full transition-colors"
-            id="newPassword"
-            name="newPassword"
-            placeholder="Nhập mật khẩu mới"
-            required
-            type="password"
-          />
+          <div className="relative">
+            <input
+              className="px-3 py-2 pr-10 border border-zinc-400 focus:border-blue-500 rounded outline-none w-full transition-colors"
+              id="newPassword"
+              name="newPass"
+              onChange={changePass}
+              placeholder="Nhập mật khẩu mới"
+              required
+              type={showPasswords.new ? "text" : "password"}
+              value={passwords.newPass}
+            />
+            <button
+              className="top-1/2 right-3 absolute text-gray-500 hover:text-gray-700 -translate-y-1/2"
+              onClick={() => toggleShowPassword("new")}
+              type="button"
+            >
+              {showPasswords.new ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
         </div>
 
         {/* Xác nhận mật khẩu mới */}
@@ -227,14 +333,25 @@ const DashboardProfile = () => {
           >
             Xác nhận mật khẩu mới
           </label>
-          <input
-            className="px-3 py-2 border border-zinc-400 focus:border-blue-500 rounded outline-none w-full transition-colors"
-            id="confirmNewPassword"
-            name="confirmNewPassword"
-            placeholder="Nhập lại mật khẩu mới"
-            required
-            type="password"
-          />
+          <div className="relative">
+            <input
+              className="px-3 py-2 pr-10 border border-zinc-400 focus:border-blue-500 rounded outline-none w-full transition-colors"
+              id="confirmNewPassword"
+              name="confirmNewPass"
+              onChange={changePass}
+              placeholder="Nhập lại mật khẩu mới"
+              required
+              type={showPasswords.confirm ? "text" : "password"}
+              value={passwords.confirmNewPass}
+            />
+            <button
+              className="top-1/2 right-3 absolute text-gray-500 hover:text-gray-700 -translate-y-1/2"
+              onClick={() => toggleShowPassword("confirm")}
+              type="button"
+            >
+              {showPasswords.confirm ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
         </div>
 
         {/* Nút cập nhật mật khẩu */}
@@ -247,6 +364,9 @@ const DashboardProfile = () => {
           </button>
         </div>
       </form>
+
+      {/* Toast Container */}
+      <ToastContainer autoClose={3000} position="top-right" />
     </div>
   );
 };
