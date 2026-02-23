@@ -48,12 +48,12 @@ const BlogCard = ({ item, slice = 150, isProfilePage = false }) => {
         {/* Phần nội dung - 4/6 chiều rộng trên desktop */}
         <div className="flex flex-col justify-between w-full lg:w-4/6">
           {/* Tiêu đề */}
-          <h3 className="mb-2 font-semibold text-gray-900 text-xl">
+          <h3 className="mb-2 font-semibold text-gray-900 text-xl line-clamp-2">
             {item.title}
           </h3>
 
           {/* Mô tả với cắt ngắn theo slice prop */}
-          <p className="mb-4 text-gray-600 leading-relaxed">
+          <p className="mb-4 text-gray-600 leading-relaxed line-clamp-3">
             {item.description.slice(0, slice)}
             {item.description.length > slice && "..."}
           </p>

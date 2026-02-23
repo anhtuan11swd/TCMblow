@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import Blog from "../models/Blog.js";
 import Category from "../models/Category.js";
 import User from "../models/User.js";
+import { logBlogUpdated } from "../utils/activityLogger.js";
 
 // Middleware helper để lấy user từ token (optional)
 const getUserFromCookie = async (req) => {
@@ -550,6 +551,12 @@ const editBlog = async (req, res) => {
         message: "Không tìm thấy bài viết",
         success: false,
       });
+    }
+
+    // Lưu hoạt động nếu có user (admin)
+    const user = await getUserFromCookie(req);
+    if (user && user.role === "admin") {
+      await logBlogUpdated(user._id, updatedBlog._id, updatedBlog.title);
     }
 
     res.status(200).json({

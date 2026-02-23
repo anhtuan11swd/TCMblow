@@ -5,9 +5,11 @@ import {
   createCategory,
   deleteBlog,
   deleteCategory,
+  getAdminStats,
   getAllBlogs,
   getCategories,
   getPublicCategories,
+  getRecentActivities,
 } from "../controllers/adminController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import { handleUploadError, uploadImage } from "../middleware/imageUpload.js";
@@ -68,6 +70,22 @@ router.delete(
   authMiddleware.verifyToken,
   authMiddleware.authorizeRole("admin"),
   deleteCategory,
+);
+
+// Route lấy thống kê admin
+router.get(
+  "/stats",
+  authMiddleware.verifyToken,
+  authMiddleware.authorizeRole("admin"),
+  getAdminStats,
+);
+
+// Route lấy hoạt động gần đây
+router.get(
+  "/recent-activities",
+  authMiddleware.verifyToken,
+  authMiddleware.authorizeRole("admin"),
+  getRecentActivities,
 );
 
 export default router;

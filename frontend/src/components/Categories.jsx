@@ -62,7 +62,7 @@ const Categories = () => {
           const colors = getColorClass(index);
           return (
             <Link
-              className={`${colors.bg} ${colors.hover} rounded-lg px-4 py-3 text-center font-semibold text-gray-700 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md`}
+              className={`${colors.bg} ${colors.hover} rounded-lg px-4 py-3 text-center font-semibold text-gray-700 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md truncate`}
               key={category._id}
               to={`/cat/${category._id}`}
             >
