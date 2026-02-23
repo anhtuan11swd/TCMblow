@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 /**
  * BlogList - Component hiển thị danh sách blog trong trang Admin
  * Sử dụng Grid Layout với 3 cột, tập trung vào việc quản trị và chỉnh sửa
@@ -5,13 +7,17 @@
  * @param {Array} blogs - Mảng các bài viết blog
  * @param {Function} onDelete - Hàm xóa blog
  */
-import { Link } from "react-router-dom";
-
 const BlogList = ({ blogs = [], onDelete }) => {
   const handleDelete = (id) => {
     if (onDelete) {
       onDelete(id);
     }
+  };
+
+  // Xử lý hiển thị hình ảnh
+  const getImageSrc = (image) => {
+    if (!image) return "/temp.jpg";
+    return image;
   };
 
   return (
@@ -28,21 +34,28 @@ const BlogList = ({ blogs = [], onDelete }) => {
               <img
                 alt={item.title}
                 className="rounded-lg w-full h-48 object-cover"
-                src={item.IMG}
+                src={getImageSrc(item.image)}
               />
             </div>
 
             {/* Tiêu đề blog - căn giữa */}
-            <h3 className="px-2 font-semibold text-gray-900 text-lg text-center">
+            <h3 className="px-2 font-semibold text-gray-900 text-lg text-center truncate w-full">
               {item.title}
             </h3>
+
+            {/* Mô tả ngắn */}
+            {item.description && (
+              <p className="mt-2 px-2 text-gray-500 text-sm text-center truncate w-full">
+                {item.description}
+              </p>
+            )}
 
             {/* Button Container - Edit & Delete */}
             <div className="flex justify-between items-center gap-4 mt-4 w-full">
               {/* Nút Edit - Link đến trang chỉnh sửa */}
               <Link
                 className="flex-1 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium text-white text-center transition-colors duration-200"
-                to={`/update-blog/${item.id}`}
+                to={`/admin-dashboard/update-blog/${item.id}`}
               >
                 Chỉnh sửa
               </Link>

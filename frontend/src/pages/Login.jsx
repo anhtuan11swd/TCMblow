@@ -28,10 +28,19 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${backendLink}/api/v1/user/login`, inputs, {
-        withCredentials: true,
-      });
-      dispatch(login());
+      const response = await axios.post(
+        `${backendLink}/api/v1/user/login`,
+        inputs,
+        {
+          withCredentials: true,
+        },
+      );
+      dispatch(
+        login({
+          role: response.data.user.role,
+          user: response.data.user,
+        }),
+      );
       toast.success("Đăng nhập thành công!");
       setTimeout(() => {
         navigate("/profile");

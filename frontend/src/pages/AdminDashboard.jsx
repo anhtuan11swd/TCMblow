@@ -134,7 +134,7 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div>
+    <div className="bg-zinc-200 p-8 min-h-screen">
       <div className="mb-8">
         <h1 className="font-bold text-zinc-800 text-3xl">
           Tổng quan Dashboard
@@ -170,10 +170,10 @@ const AdminDashboard = () => {
 
       {/* Recent Activities */}
       <div className="bg-white shadow-lg mb-8 border border-zinc-100 rounded-xl">
-        <div className="p-6 border-zinc-100 border-b">
+        <div className="px-8 py-4 border-zinc-100 border-b">
           <h2 className="font-bold text-zinc-800 text-xl">Hoạt động gần đây</h2>
         </div>
-        <div className="p-6">
+        <div className="px-8 py-4">
           <div className="space-y-4">
             {recentActivities.map((activity) => (
               <div
@@ -212,7 +212,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Hiển thị danh sách tất cả bài viết */}
-      <div className="mb-6">
+      <div className="bg-white shadow-lg p-8 rounded-xl">
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-bold text-zinc-800 text-xl">Tất cả bài viết</h2>
           <Link

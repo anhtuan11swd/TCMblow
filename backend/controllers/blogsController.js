@@ -517,6 +517,89 @@ const getAllCategories = async (_req, res) => {
   }
 };
 
+/**
+ * editBlog - Cập nhật bài viết theo ID
+ * Sử dụng findByIdAndUpdate để cập nhật tiêu đề và mô tả
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+const editBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description } = req.body;
+
+    // Kiểm tra dữ liệu đầu vào
+    if (!title && !description) {
+      return res.status(400).json({
+        message: "Cần cập nhật ít nhất một trường (title hoặc description)",
+        success: false,
+      });
+    }
+
+    // Tìm và cập nhật blog
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      id,
+      { description, title },
+      { returnDocument: "after", runValidators: true },
+    )
+      .populate("author", "name email")
+      .populate("category", "name");
+
+    if (!updatedBlog) {
+      return res.status(404).json({
+        message: "Không tìm thấy bài viết",
+        success: false,
+      });
+    }
+
+    res.status(200).json({
+      blog: updatedBlog,
+      message: "Bài viết đã được cập nhật thành công",
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error updating blog:", error);
+    res.status(500).json({
+      error: error.message,
+      message: "Lỗi server nội bộ",
+      success: false,
+    });
+  }
+};
+
+/**
+ * deleteBlog - Xóa bài viết theo ID
+ * Sử dụng findByIdAndDelete để xóa blog
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+const deleteBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedBlog = await Blog.findByIdAndDelete(id);
+
+    if (!deletedBlog) {
+      return res.status(404).json({
+        message: "Không tìm thấy bài viết",
+        success: false,
+      });
+    }
+
+    res.status(200).json({
+      message: "Bài viết đã được xóa thành công",
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error deleting blog:", error);
+    res.status(500).json({
+      error: error.message,
+      message: "Lỗi server nội bộ",
+      success: false,
+    });
+  }
+};
+
 export {
   fetchAllBlogs,
   fetchRecentBlogs,
@@ -529,4 +612,6 @@ export {
   getLikedBlogsOfAUser,
   getBlogByCategory,
   getAllCategories,
+  editBlog,
+  deleteBlog,
 };

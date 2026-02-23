@@ -1,4 +1,7 @@
-import { NavLink, Outlet } from "react-router-dom";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { logout } from "../store/auth";
 
 const AdminLayout = () => {
   const navItems = [
@@ -84,6 +87,23 @@ const AdminLayout = () => {
     },
   ];
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:1000/api/v1/user/logout",
+        {},
+        { withCredentials: true },
+      );
+      dispatch(logout());
+      navigate("/login");
+    } catch (error) {
+      console.error("Lỗi đăng xuất:", error);
+    }
+  };
+
   return (
     <div className="flex min-h-screen">
       {/* Sidebar - 1/6 chiều rộng, fixed */}
@@ -119,9 +139,10 @@ const AdminLayout = () => {
         </nav>
 
         <div className="p-4 border-zinc-300 border-t">
-          <NavLink
-            className="flex items-center gap-3 hover:bg-zinc-300 px-4 py-3 rounded-lg text-zinc-600 hover:text-zinc-800 transition-all duration-300"
-            to="/login"
+          <button
+            className="flex items-center gap-3 hover:bg-zinc-300 px-4 py-3 rounded-lg w-full text-zinc-600 hover:text-zinc-800 transition-all duration-300 cursor-pointer"
+            onClick={handleLogout}
+            type="button"
           >
             <svg
               aria-label="Logout icon"
@@ -139,7 +160,7 @@ const AdminLayout = () => {
               />
             </svg>
             <span className="font-medium text-base">Đăng xuất</span>
-          </NavLink>
+          </button>
         </div>
       </aside>
 

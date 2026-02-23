@@ -1,56 +1,96 @@
+import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import BlogList from "../components/admin/BlogList";
 
 /**
  * EditBlogs - Trang quản lý bài viết cho admin
- * Tái sử dụng component AllBlogs để hiển thị danh sách bài viết
- * Chuẩn bị nền tảng cho các tác vụ Update và Delete
+ * Lấy dữ liệu blog từ API và hiển thị danh sách
+ * Cho phép chỉnh sửa và xóa bài viết
  */
 const EditBlogs = () => {
-  // Dữ liệu mẫu (sẽ được thay thế bằng API call)
-  const blogData = [
-    {
-      date: "2024-01-15",
-      description:
-        "Để có mái tóc khỏe mạnh, bạn cần kết hợp giữa chăm sóc đúng cách, dinh dưỡng và lối sống lành mạnh.",
-      IMG: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop",
-      id: "1",
-      title: "Top 10 Mẹo Chăm Sóc Tóc Để Có Mái Tóc Khỏe Mạnh",
-    },
-    {
-      date: "2024-01-10",
-      description:
-        "Để thực sự chăm sóc tóc, điều quan trọng là phải hiểu cấu trúc sinh học và chu kỳ phát triển của tóc.",
-      IMG: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=800&h=600&fit=crop",
-      id: "2",
-      title: "Hiểu Cấu Trúc Tóc Và Chu Kỳ Phát Triển Của Tóc",
-    },
-    {
-      date: "2024-01-05",
-      description:
-        "Bạn không cần phải đến salon mỗi khi muốn tạo kiểu tóc chuyên nghiệp. Với các công cụ và kỹ thuật đúng.",
-      IMG: "https://images.unsplash.com/photo-1560869713-7d0a29430803?w=800&h=600&fit=crop",
-      id: "3",
-      title: "Kỹ Thuật Tạo Kiểu Chuyên Nghiệp Tại Nhà",
-    },
-    {
-      date: "2024-01-01",
-      description:
-        "Nhiều vấn đề tóc phổ biến có thể được giải quyết bằng các thành phần tự nhiên có sẵn trong bếp của bạn.",
-      IMG: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=800&h=600&fit=crop",
-      id: "4",
-      title: "Các Liệu Pháp Tự Nhiên Cho Các Vấn Đề Tóc Thường Gặp",
-    },
-  ];
+  const [blogs, setBlogs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Hàm xử lý khi nhấn nút xóa
-  const handleDelete = (blogId) => {
-    // TODO: Kết nối với API để xóa bài viết
-    console.log("Xóa bài viết với ID:", blogId);
-    if (window.confirm("Bạn có chắc chắn muốn xóa bài viết này?")) {
-      // Xử lý xóa ở đây
-      alert(`Đã xóa bài viết ID: ${blogId}`);
+  // Lấy danh sách blog từ API
+  const fetchBlogs = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        "http://localhost:1000/api/v1/blogs/fetchAllBlogs",
+        { withCredentials: true },
+      );
+
+      if (response.data.success) {
+        // Chuyển đổi dữ liệu từ API sang định dạng phù hợp cho BlogList
+        const formattedBlogs = response.data.blogs.map((blog) => ({
+          createdAt: blog.createdAt,
+          description: blog.description,
+          id: blog._id,
+          image: blog.image,
+          title: blog.title,
+        }));
+        setBlogs(formattedBlogs);
+      }
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
+      toast.error("Lỗi khi tải danh sách bài viết");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Gọi API khi component mount
+  useEffect(() => {
+    fetchBlogs();
+  }, [fetchBlogs]);
+
+  // Auto-refresh khi blogs thay đổi (xóa, cập nhật, thêm mới)
+  useEffect(() => {
+    if (blogs.length > 0) {
+      // Danh sách đã được cập nhật, có thể thêm logic refresh nếu cần
+    }
+  }, [blogs]);
+
+  // Hàm xử lý xóa bài viết
+  const handleDelete = async (blogId) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa bài viết này?")) {
+      return;
+    }
+
+    try {
+      const response = await axios.delete(
+        `http://localhost:1000/api/v1/blogs/deleteBlog/${blogId}`,
+        { withCredentials: true },
+      );
+
+      if (response.data.success) {
+        toast.success("Bài viết đã được xóa thành công");
+        // Cập nhật danh sách blog sau khi xóa
+        setBlogs(blogs.filter((blog) => blog.id !== blogId));
+      }
+    } catch (error) {
+      console.error("Error deleting blog:", error);
+      if (error.response?.status === 401) {
+        toast.error("Bạn cần đăng nhập với tài khoản Admin để xóa bài viết");
+      } else if (error.response?.status === 403) {
+        toast.error("Bạn không có quyền xóa bài viết");
+      } else {
+        toast.error("Lỗi khi xóa bài viết");
+      }
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center p-4 min-h-screen">
+        <div className="flex flex-col items-center gap-4">
+          <div className="border-4 border-blue-600 border-t-transparent rounded-full w-10 h-10 animate-spin" />
+          <p className="text-zinc-500">Đang tải dữ liệu...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -67,12 +107,19 @@ const EditBlogs = () => {
         {/* Tiêu đề danh sách */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="font-semibold text-zinc-800 text-xl">
-            Danh sách bài viết ({blogData.length})
+            Danh sách bài viết ({blogs.length})
           </h2>
+          <button
+            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium text-white transition-colors duration-200"
+            onClick={fetchBlogs}
+            type="button"
+          >
+            Làm mới
+          </button>
         </div>
 
         {/* Container danh sách bài viết - Sử dụng BlogList component */}
-        <BlogList blogs={blogData} onDelete={handleDelete} />
+        <BlogList blogs={blogs} onDelete={handleDelete} />
       </div>
     </div>
   );

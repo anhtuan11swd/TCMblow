@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { login } from "../store/auth";
 
 const AdminLogin = () => {
   const [inputs, setInputs] = useState({
@@ -12,6 +13,7 @@ const AdminLogin = () => {
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const backendLink = useSelector((state) => state.production.link);
 
   const change = (e) => {
@@ -28,6 +30,12 @@ const AdminLogin = () => {
         { withCredentials: true },
       );
       toast.success(response.data.message || "Login successfully");
+      dispatch(
+        login({
+          role: response.data.user.role,
+          user: response.data.user,
+        }),
+      );
       setTimeout(() => {
         navigate("/admin-dashboard");
       }, 1000);

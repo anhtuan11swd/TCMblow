@@ -107,11 +107,16 @@ const AddBlog = () => {
   };
 
   return (
-    <div className="p-4 min-h-screen">
+    <div className="bg-zinc-200 p-8 min-h-screen">
       {/* Page Title */}
-      <h1 className="mb-8 font-semibold text-2xl">Thêm bài viết</h1>
+      <div className="bg-white shadow-lg mb-8 p-8 rounded-xl">
+        <h1 className="font-semibold text-2xl">Thêm bài viết</h1>
+      </div>
 
-      <form className="space-y-8" onSubmit={handleSubmit}>
+      <form
+        className="space-y-8 bg-white shadow-lg p-8 rounded-xl"
+        onSubmit={handleSubmit}
+      >
         {/* Title Input - Modern design with bottom border only */}
         <input
           className="bg-transparent pb-2 border-zinc-400 border-b border-none outline-none w-full font-semibold text-zinc-800 placeholder:text-zinc-400 text-3xl transition-colors duration-300"

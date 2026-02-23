@@ -42,8 +42,8 @@ export const adminLogin = async (req, res) => {
     res.cookie("blogAppTCM", token, {
       httpOnly: true,
       maxAge: 30 * 24 * 60 * 60 * 1000,
-      sameSite: "strict",
-      secure: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
     });
 
     res.status(200).json({

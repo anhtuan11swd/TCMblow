@@ -1,91 +1,97 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 /**
  * UpdateBlog - Trang cập nhật bài viết
- * Sao chép cấu trúc từ AddBlog và đổi tiêu đề thành "Cập nhật bài viết"
+ * Lấy dữ liệu blog hiện có từ API và cho phép chỉnh sửa
  * Sử dụng design system từ UI/UX Pro Max
  */
-
-// Mock data - sẽ được thay thế bằng API call
-const blogData = {
-  1: {
-    content:
-      "Để có mái tóc khỏe mạnh, bạn cần kết hợp giữa chăm sóc đúng cách, dinh dưỡng và lối sống lành mạnh. Dưới đây là top 10 mẹo chăm sóc tóc hiệu quả...",
-    existingImage:
-      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop",
-    title: "Top 10 Mẹo Chăm Sóc Tóc Để Có Mái Tóc Khỏe Mạnh",
-  },
-  2: {
-    content:
-      "Để thực sự chăm sóc tóc, điều quan trọng là phải hiểu cấu trúc sinh học và chu kỳ phát triển của tóc. Tóc được cấu tạo từ keratin...",
-    existingImage:
-      "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=800&h=600&fit=crop",
-    title: "Hiểu Cấu Trúc Tóc Và Chu Kỳ Phát Triển Của Tóc",
-  },
-  3: {
-    content:
-      "Bạn không cần phải đến salon mỗi khi muốn tạo kiểu tóc chuyên nghiệp. Với các công cụ và kỹ thuật đúng, bạn có thể tự tạo kiểu tại nhà...",
-    existingImage:
-      "https://images.unsplash.com/photo-1560869713-7d0a29430803?w=800&h=600&fit=crop",
-    title: "Kỹ Thuật Tạo Kiểu Chuyên Nghiệp Tại Nhà",
-  },
-  4: {
-    content:
-      "Nhiều vấn đề tóc phổ biến có thể được giải quyết bằng các thành phần tự nhiên có sẵn trong bếp của bạn. Các liệu pháp tự nhiên...",
-    existingImage:
-      "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=800&h=600&fit=crop",
-    title: "Các Liệu Pháp Tự Nhiên Cho Các Vấn Đề Tóc Thường Gặp",
-  },
-};
-
 const UpdateBlog = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [blog, setBlog] = useState({
-    content: "",
-    existingImage: "",
-    image: null,
+    description: "",
+    image: "",
     title: "",
   });
 
+  // Lấy dữ liệu blog hiện có từ API
   useEffect(() => {
-    // Simulate API call to fetch blog data
-    const fetchBlog = () => {
-      setIsLoading(true);
-      setTimeout(() => {
-        const blogInfo = blogData[id];
-        if (blogInfo) {
+    const fetchBlog = async () => {
+      if (!id) return;
+
+      try {
+        setIsLoading(true);
+        const response = await axios.get(
+          `http://localhost:1000/api/v1/blogs/getDSCByAddress/${id}`,
+          { withCredentials: true },
+        );
+
+        if (response.data.success && response.data.blog) {
+          const blogData = response.data.blog;
           setBlog({
-            ...blogInfo,
-            image: null,
+            description: blogData.description || "",
+            image: blogData.image || "",
+            title: blogData.title || "",
           });
         }
+      } catch (error) {
+        console.error("Error fetching blog:", error);
+        toast.error("Lỗi khi tải thông tin bài viết");
+      } finally {
         setIsLoading(false);
-      }, 300);
+      }
     };
 
-    if (id) {
-      fetchBlog();
-    }
+    fetchBlog();
   }, [id]);
 
+  // Xử lý thay đổi input
   const handleChange = (e) => {
     const { name, value } = e.target;
     setBlog({ ...blog, [name]: value });
   };
 
-  const handleImageChange = (e) => {
-    setBlog({ ...blog, image: e.target.files[0] });
-  };
-
-  const handleSubmit = (e) => {
+  // Xử lý cập nhật blog
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Updated blog data:", blog);
-    // Logic to update blog would go here
-    alert(`Đã cập nhật bài viết ID: ${id}`);
-    navigate("/admin-dashboard/edit-blogs");
+
+    if (!blog.title.trim()) {
+      toast.error("Vui lòng nhập tiêu đề bài viết");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const response = await axios.put(
+        `http://localhost:1000/api/v1/blogs/editBlog/${id}`,
+        {
+          description: blog.description,
+          title: blog.title,
+        },
+        { withCredentials: true },
+      );
+
+      if (response.data.success) {
+        toast.success("Bài viết đã được cập nhật thành công");
+        navigate("/admin-dashboard/edit-blogs");
+      }
+    } catch (error) {
+      console.error("Error updating blog:", error);
+      if (error.response?.status === 401) {
+        toast.error("Bạn cần đăng nhập với tài khoản Admin để cập nhật");
+      } else if (error.response?.status === 403) {
+        toast.error("Bạn không có quyền cập nhật bài viết");
+      } else {
+        toast.error("Lỗi khi cập nhật bài viết");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleBack = () => {
@@ -188,66 +194,44 @@ const UpdateBlog = () => {
         {/* Description Textarea */}
         <textarea
           className="bg-transparent p-4 border border-zinc-300 focus:border-blue-600 rounded-lg outline-none w-full text-zinc-700 text-xl leading-relaxed transition-colors duration-300 resize-none"
-          name="content"
+          name="description"
           onChange={handleChange}
-          placeholder="Nhập nội dung chi tiết bài viết..."
+          placeholder="Nhập mô tả chi tiết bài viết..."
           required
           rows={10}
-          value={blog.content}
+          value={blog.description}
         />
 
-        {/* Image Upload - File input with accept formats */}
-        <div className="space-y-4">
-          <label
-            className="block font-semibold text-zinc-700 text-sm"
-            htmlFor="blog-image"
-          >
-            Ảnh bìa
-          </label>
-
-          {/* Preview existing image */}
-          {blog.existingImage && !blog.image && (
+        {/* Image Display - Read only */}
+        {blog.image && (
+          <div className="space-y-4">
+            <label
+              className="block font-semibold text-zinc-700 text-sm"
+              htmlFor="blog-image"
+            >
+              Ảnh bìa hiện tại
+            </label>
             <div className="mb-4">
-              <p className="mb-2 text-zinc-500 text-sm">Ảnh hiện tại:</p>
               <img
                 alt={blog.title}
                 className="rounded-lg w-full max-w-md h-48 object-cover"
-                src={blog.existingImage}
+                src={blog.image}
               />
             </div>
-          )}
-
-          {/* Preview new image */}
-          {blog.image && (
-            <div className="mb-4">
-              <p className="mb-2 text-zinc-500 text-sm">Ảnh mới:</p>
-              <img
-                alt="Preview"
-                className="rounded-lg w-full max-w-md h-48 object-cover"
-                src={URL.createObjectURL(blog.image)}
-              />
-            </div>
-          )}
-
-          <input
-            accept=".jpeg,.jpg,.png"
-            className="block hover:file:bg-zinc-800 file:bg-zinc-900 file:mr-4 file:px-4 file:py-2 file:border-0 file:rounded-lg w-full file:font-semibold text-zinc-500 file:text-white text-sm file:text-sm transition-colors duration-300 cursor-pointer"
-            id="blog-image"
-            onChange={handleImageChange}
-            type="file"
-          />
-          <p className="mt-1 text-zinc-500 text-sm">
-            Định dạng: .jpeg, .png, .jpg (để trống nếu giữ nguyên ảnh cũ)
-          </p>
-        </div>
+            <p className="mt-1 text-zinc-500 text-sm">
+              Lưu ý: Để thay đổi ảnh bìa, vui lòng tạo bài viết mới
+            </p>
+          </div>
+        )}
 
         {/* Submit & Cancel Buttons */}
         <div className="flex justify-start gap-4 pt-4">
           <button
-            className="bg-blue-600 hover:bg-blue-700 shadow-xl hover:shadow-2xl px-8 py-3 rounded-lg font-semibold text-white transition-all duration-300 cursor-pointer"
+            className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 shadow-xl hover:shadow-2xl px-8 py-3 rounded-lg font-semibold text-white transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+            disabled={isSubmitting}
             type="submit"
           >
-            Cập nhật bài viết
+            {isSubmitting ? "Đang cập nhật..." : "Cập nhật bài viết"}
           </button>
           <button
             className="bg-zinc-200 hover:bg-zinc-300 px-8 py-3 rounded-lg font-semibold text-zinc-700 transition-colors duration-200 cursor-pointer"

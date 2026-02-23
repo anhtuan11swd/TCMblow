@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes } from "react-router-dom";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLayout from "./layout/AdminLayout";
 import MainLayout from "./layout/MainLayout";
 import OtherLayout from "./layout/OtherLayout";
@@ -21,27 +23,49 @@ import Favorites from "./pages/profile/Favorites";
 import LikedBlogs from "./pages/profile/LikedBlogs";
 import Signup from "./pages/Signup";
 import UpdateBlog from "./pages/UpdateBlog";
-import { login } from "./store/auth";
+import { login, setAuthChecked } from "./store/auth";
 
 function App() {
   const dispatch = useDispatch();
+  const { isAuthChecked } = useSelector((state) => state.auth);
+  const backendLink = useSelector((state) => state.production.link);
 
   useEffect(() => {
     const checkCookie = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:1000/api/v1/user/check-cookie",
+          `${backendLink}/api/v1/user/check-cookie`,
           { withCredentials: true },
         );
         if (response.data.valid) {
-          dispatch(login());
+          dispatch(
+            login({
+              role: response.data.role,
+              user: response.data.user,
+            }),
+          );
+        } else {
+          dispatch(setAuthChecked());
         }
       } catch (error) {
         console.error("Lỗi kiểm tra cookie:", error);
+        dispatch(setAuthChecked());
       }
     };
     checkCookie();
-  }, [dispatch]);
+  }, [dispatch, backendLink]);
+
+  // Hiển thị loading trong khi kiểm tra authentication
+  if (!isAuthChecked) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <div className="inline-block border-4 border-blue-600 border-t-transparent rounded-full w-12 h-12 animate-spin" />
+          <p className="mt-4 text-gray-600">Đang tải...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <Routes>
       {/* Main Layout Routes - với Navbar và Footer */}
@@ -65,8 +89,15 @@ function App() {
         <Route element={<AdminDashboard />} path="admin" />
         <Route element={<Description />} path="description/:id" />
 
-        {/* Nested Routes cho Profile */}
-        <Route element={<Profile />} path="profile">
+        {/* Nested Routes cho Profile - Protected */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+          path="profile"
+        >
           <Route element={<DashboardProfile />} index />
           <Route element={<Favorites />} path="favorites" />
           <Route element={<LikedBlogs />} path="liked-blogs" />
@@ -82,8 +113,15 @@ function App() {
       {/* Admin Login Route */}
       <Route element={<AdminLogin />} path="admin-login" />
 
-      {/* Admin Layout Routes - với Sidebar */}
-      <Route element={<AdminLayout />} path="admin-dashboard">
+      {/* Admin Layout Routes - với Sidebar - Protected */}
+      <Route
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout />
+          </AdminProtectedRoute>
+        }
+        path="admin-dashboard"
+      >
         <Route element={<AdminDashboard />} index />
         <Route element={<AddBlog />} path="add-blogs" />
         <Route element={<CategoryManager />} path="categories" />

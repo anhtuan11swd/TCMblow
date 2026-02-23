@@ -35,11 +35,11 @@ const BlogCard = ({ item, slice = 150, isProfilePage = false }) => {
           {imageUrl ? (
             <img
               alt={item.title}
-              className="rounded-lg w-full h-48 lg:h-full object-cover"
+              className="rounded-lg w-full h-[250px] object-contain"
               src={imageUrl}
             />
           ) : (
-            <div className="flex justify-center items-center bg-gray-200 rounded-lg w-full h-48 lg:h-full">
+            <div className="flex justify-center items-center bg-gray-200 rounded-lg w-full h-[250px]">
               <span className="text-gray-400">Không có hình ảnh</span>
             </div>
           )}

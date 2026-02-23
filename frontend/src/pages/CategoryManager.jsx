@@ -109,17 +109,19 @@ const CategoryManager = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="bg-zinc-200 p-8 min-h-screen">
       {/* Page Title */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="font-semibold text-2xl">Quản lý Danh mục</h1>
-        <button
-          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold text-white transition-colors duration-300"
-          onClick={() => setIsModalOpen(true)}
-          type="button"
-        >
-          Thêm danh mục
-        </button>
+      <div className="bg-white shadow-lg mb-8 p-8 rounded-xl">
+        <div className="flex justify-between items-center">
+          <h1 className="font-semibold text-2xl">Quản lý Danh mục</h1>
+          <button
+            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold text-white transition-colors duration-300"
+            onClick={() => setIsModalOpen(true)}
+            type="button"
+          >
+            Thêm danh mục
+          </button>
+        </div>
       </div>
 
       {/* Categories List */}
@@ -151,13 +153,13 @@ const CategoryManager = () => {
             ) : (
               categories.map((category) => (
                 <tr className="hover:bg-zinc-50" key={category._id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-zinc-900">
+                  <td className="px-6 py-4">
+                    <div className="font-medium text-zinc-900 truncate max-w-xs">
                       {category.name}
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-zinc-500 text-sm">
+                    <div className="text-zinc-500 text-sm truncate max-w-md">
                       {category.description || "Không có mô tả"}
                     </div>
                   </td>

@@ -2,6 +2,8 @@ import express from "express";
 import {
   addBlogsToFavorite,
   addToFavorites,
+  deleteBlog,
+  editBlog,
   fetchAllBlogs,
   fetchRecentBlogs,
   getAllCategories,
@@ -12,6 +14,7 @@ import {
   removeBlogFromFavorites,
   removeFromFavorites,
 } from "../controllers/blogsController.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -80,5 +83,27 @@ router.get("/getBlogByCategory/:id", getBlogByCategory);
  * Lấy tất cả danh mục
  */
 router.get("/getAllCategories", getAllCategories);
+
+/**
+ * PUT /api/v1/blogs/editBlog/:id
+ * Cập nhật bài viết theo ID (chỉ Admin)
+ */
+router.put(
+  "/editBlog/:id",
+  authMiddleware.verifyToken,
+  authMiddleware.authorizeRole("admin"),
+  editBlog,
+);
+
+/**
+ * DELETE /api/v1/blogs/deleteBlog/:id
+ * Xóa bài viết theo ID (chỉ Admin)
+ */
+router.delete(
+  "/deleteBlog/:id",
+  authMiddleware.verifyToken,
+  authMiddleware.authorizeRole("admin"),
+  deleteBlog,
+);
 
 export default router;

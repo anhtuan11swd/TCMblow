@@ -61,13 +61,41 @@ const DashboardProfile = () => {
 
   // Gọi API lấy dữ liệu profile khi component mount
   useEffect(() => {
-    fetchProfileData();
-  }, [fetchProfileData]);
+    let cancelled = false;
+
+    const loadData = async () => {
+      try {
+        const response = await axios.get(
+          `${backendLink}/api/v1/user/get-profile-data`,
+          { withCredentials: true },
+        );
+        if (!cancelled) {
+          const userData = response.data.user;
+          setUserData(userData);
+          setStats({
+            favoriteBlogsCount: userData.favoriteBlogsCount || 0,
+            likedBlogsCount: userData.likedBlogsCount || 0,
+            totalBlogsCount: userData.totalBlogsCount || 0,
+          });
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Lỗi khi lấy dữ liệu profile:", error);
+        }
+      }
+    };
+
+    void loadData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [backendLink]);
 
   // Refresh stats khi trang được focus lại (khi người dùng quay lại từ trang khác)
   useEffect(() => {
     const handleFocus = () => {
-      fetchProfileData();
+      void fetchProfileData();
     };
 
     window.addEventListener("focus", handleFocus);
