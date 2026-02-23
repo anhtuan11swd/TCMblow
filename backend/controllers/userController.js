@@ -197,3 +197,30 @@ export const changeUserPassword = async (req, res) => {
     return res.status(500).json({ message: "Lỗi server" });
   }
 };
+
+export const changeAvatar = async (req, res) => {
+  try {
+    // Kiểm tra xem có file được tải lên không
+    if (!req.file) {
+      return res.status(400).json({ message: "Vui lòng tải lên một hình ảnh" });
+    }
+
+    // Lấy URL từ file đã được xử lý bởi middleware
+    const imageUrl = req.file.path;
+
+    // Lấy thông tin người dùng từ middleware
+    const user = req.user;
+
+    // Cập nhật avatar trong DB
+    user.avatar = imageUrl;
+    await user.save();
+
+    return res.status(200).json({
+      avatar: imageUrl,
+      message: "Cập nhật ảnh đại diện thành công",
+    });
+  } catch (error) {
+    console.error("Change avatar error:", error);
+    return res.status(500).json({ message: "Lỗi server" });
+  }
+};

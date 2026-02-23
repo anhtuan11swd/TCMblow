@@ -12,7 +12,10 @@ const DashboardProfile = () => {
   // State quản lý dữ liệu người dùng
   const [userData, setUserData] = useState(null);
 
-  // State for avatar preview
+  // State quản lý ảnh đại diện đang chọn (file object)
+  const [changeAvatar, setChangeAvatar] = useState(null);
+
+  // State quản lý ảnh xem trước (URL.createObjectURL)
   const [avatarPreview, setAvatarPreview] = useState(null);
 
   // State quản lý dữ liệu mật khẩu
@@ -51,6 +54,9 @@ const DashboardProfile = () => {
   const handleAvatarChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      // Lưu file vào state để gửi lên server
+      setChangeAvatar(file);
+      // Tạo URL xem trước cho giao diện
       const previewUrl = URL.createObjectURL(file);
       setAvatarPreview(previewUrl);
     }
@@ -71,6 +77,49 @@ const DashboardProfile = () => {
       ...prev,
       [field]: !prev[field],
     }));
+  };
+
+  // Gửi yêu cầu cập nhật avatar lên server
+  const updateAvatar = async () => {
+    if (!changeAvatar) return;
+
+    try {
+      const formData = new FormData();
+      formData.append("image", changeAvatar);
+
+      const response = await axios.put(
+        `${backendLink}/api/v1/user/change-avatar`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        },
+      );
+
+      if (response.status === 200) {
+        toast.success("Cập nhật ảnh đại diện thành công!");
+        // Đặt lại state ảnh đang chọn về null
+        setChangeAvatar(null);
+        // Giải phóng URL object để tránh memory leak
+        if (avatarPreview) {
+          URL.revokeObjectURL(avatarPreview);
+        }
+        // Đặt lại avatarPreview về null
+        setAvatarPreview(null);
+        // Cập nhật lại userData với avatar mới
+        setUserData((prev) => ({
+          ...prev,
+          avatar: response.data.avatar,
+        }));
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Cập nhật ảnh đại diện thất bại";
+      toast.error(errorMessage);
+      console.error("Lỗi upload avatar:", error);
+    }
   };
 
   // Gửi yêu cầu đổi mật khẩu
@@ -107,7 +156,8 @@ const DashboardProfile = () => {
         {/* Khung Avatar */}
         <div className="flex flex-col items-center">
           <div className="flex justify-center items-center bg-zinc-700 rounded-full w-[15vh] md:w-[20vh] h-[15vh] md:h-[20vh] overflow-hidden shrink-0">
-            {avatarPreview ? (
+            {/* Logic hiển thị ảnh ưu tiên: Ảnh mới đang chọn > Ảnh từ server > Ảnh mặc định */}
+            {changeAvatar ? (
               <img
                 alt="Avatar"
                 className="w-full h-full object-cover"
@@ -124,13 +174,13 @@ const DashboardProfile = () => {
             )}
           </div>
 
-          {/* Nút Change Avatar */}
-          <div className="flex justify-center items-center mt-4 w-full">
+          {/* Nút chọn ảnh và cập nhật */}
+          <div className="flex justify-center items-center gap-2 mt-4 w-full">
             <label
-              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded w-full md:w-auto text-white text-center transition-colors duration-200 cursor-pointer"
+              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white text-center transition-colors duration-200 cursor-pointer"
               htmlFor="imagefile"
             >
-              Đổi ảnh
+              Chọn ảnh
             </label>
             <input
               accept=".jpg,.jpeg,.png"
@@ -139,6 +189,16 @@ const DashboardProfile = () => {
               onChange={handleAvatarChange}
               type="file"
             />
+            {/* Nút xác nhận tải lên - chỉ hiển thị khi có ảnh đang chọn */}
+            {changeAvatar && (
+              <button
+                className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white text-center transition-colors duration-200"
+                onClick={updateAvatar}
+                type="button"
+              >
+                Lưu
+              </button>
+            )}
           </div>
         </div>
 

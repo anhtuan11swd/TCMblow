@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  changeAvatar,
   changeUserPassword,
   checkCookie,
   getProfileData,
@@ -8,6 +9,7 @@ import {
   signupUser,
 } from "../controllers/userController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+import { upload } from "../utils/cloudinary.js";
 
 const router = express.Router();
 
@@ -20,6 +22,12 @@ router.patch(
   "/change-user-password",
   authMiddleware.verifyToken,
   changeUserPassword,
+);
+router.put(
+  "/change-avatar",
+  authMiddleware.verifyToken,
+  upload.single("image"),
+  changeAvatar,
 );
 
 export default router;

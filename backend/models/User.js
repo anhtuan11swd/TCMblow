@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
+    avatar: {
+      type: String,
+    },
     email: {
       lowercase: true,
       required: [true, "email là bắt buộc"],
