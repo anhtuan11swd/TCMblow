@@ -1,5 +1,9 @@
+import axios from "axios";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AdminLogin = () => {
   const [inputs, setInputs] = useState({
@@ -8,23 +12,34 @@ const AdminLogin = () => {
   });
 
   const navigate = useNavigate();
+  const backendLink = useSelector((state) => state.production.link);
 
   const change = (e) => {
     const { name, value } = e.target;
     setInputs({ ...inputs, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
-    // Admin login logic - chuyển hướng đến dashboard
-    if (inputs.email && inputs.password) {
-      navigate("/admin-dashboard");
+    try {
+      const response = await axios.post(
+        `${backendLink}/api/v1/admin/admin-login`,
+        inputs,
+        { withCredentials: true },
+      );
+      toast.success(response.data.message || "Login successfully");
+      setTimeout(() => {
+        navigate("/admin-dashboard");
+      }, 1000);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Invalid credentials");
     }
   };
 
   return (
     <div className="flex justify-center items-center bg-gradient-to-br from-slate-100 to-zinc-200 h-screen">
       <div className="bg-white shadow-2xl p-8 md:p-12 rounded-xl w-[90%] md:w-[50%] lg:w-[35%]">
+        <ToastContainer position="top-center" />
         <div className="mb-8 text-center">
           <div className="inline-flex justify-center items-center bg-zinc-100 mb-4 rounded-full w-16 h-16">
             <svg
@@ -48,7 +63,7 @@ const AdminLogin = () => {
           </span>
         </div>
 
-        <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-5" onSubmit={handleAdminLogin}>
           <div className="flex flex-col gap-2">
             <label
               className="font-semibold text-zinc-700 text-sm"

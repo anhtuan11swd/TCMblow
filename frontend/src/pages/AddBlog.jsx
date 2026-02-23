@@ -1,11 +1,45 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const AddBlog = () => {
   const [blog, setBlog] = useState({
-    content: "",
+    categoryId: "",
+    description: "",
     image: null,
     title: "",
   });
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { link } = useSelector((state) => state.production);
+
+  // Lấy danh sách categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const token = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("blogAppTCM="))
+          ?.split("=")[1];
+
+        const response = await axios.get(`${link}/api/v1/admin/categories`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        });
+
+        if (response.data.categories) {
+          setCategories(response.data.categories);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, [link]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,10 +50,60 @@ const AddBlog = () => {
     setBlog({ ...blog, image: e.target.files[0] });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Blog data:", blog);
-    // Logic to add blog would go here
+
+    if (!blog.title || !blog.description || !blog.image) {
+      toast.error("Tất cả các trường đều bắt buộc");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("title", blog.title);
+      formData.append("description", blog.description);
+      formData.append("image", blog.image);
+      if (blog.categoryId) {
+        formData.append("categoryId", blog.categoryId);
+      }
+
+      const token = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("blogAppTCM="))
+        ?.split("=")[1];
+
+      const response = await axios.post(
+        `${link}/api/v1/admin/add-blog`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        },
+      );
+
+      if (response.status === 201) {
+        toast.success("Bài viết đã được thêm thành công");
+        // Reset form
+        setBlog({
+          categoryId: "",
+          description: "",
+          image: null,
+          title: "",
+        });
+        // Reset file input
+        document.getElementById("blog-image").value = "";
+      }
+    } catch (error) {
+      console.error("Error adding blog:", error);
+      toast.error(error.response?.data?.message || "Lỗi khi thêm bài viết");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,13 +126,37 @@ const AddBlog = () => {
         {/* Description Textarea */}
         <textarea
           className="bg-transparent p-4 border border-zinc-300 focus:border-blue-600 rounded-lg outline-none w-full text-zinc-700 text-xl leading-relaxed transition-colors duration-300 resize-none"
-          name="content"
+          name="description"
           onChange={handleChange}
-          placeholder="Nhập nội dung chi tiết bài viết..."
+          placeholder="Nhập mô tả chi tiết bài viết..."
           required
           rows={10}
-          value={blog.content}
+          value={blog.description}
         />
+
+        {/* Category Dropdown */}
+        <div className="space-y-2">
+          <label
+            className="block font-semibold text-zinc-700 text-sm"
+            htmlFor="blog-category"
+          >
+            Danh mục
+          </label>
+          <select
+            className="bg-transparent p-4 border border-zinc-300 focus:border-blue-600 rounded-lg outline-none w-full text-zinc-700 transition-colors duration-300"
+            id="blog-category"
+            name="categoryId"
+            onChange={handleChange}
+            value={blog.categoryId}
+          >
+            <option value="">Chọn danh mục</option>
+            {categories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {/* Image Upload - File input with accept formats */}
         <div className="space-y-2">
@@ -73,10 +181,11 @@ const AddBlog = () => {
         {/* Submit Button */}
         <div className="flex justify-start pt-4">
           <button
-            className="bg-blue-600 hover:bg-blue-700 shadow-xl hover:shadow-2xl px-8 py-3 rounded-lg font-semibold text-white transition-all duration-300"
+            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 shadow-xl hover:shadow-2xl px-8 py-3 rounded-lg font-semibold text-white transition-all duration-300 disabled:cursor-not-allowed"
+            disabled={loading}
             type="submit"
           >
-            Thêm bài viết
+            {loading ? "Đang thêm bài viết..." : "Thêm bài viết"}
           </button>
         </div>
       </form>

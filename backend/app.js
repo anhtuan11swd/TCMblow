@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import connectDB from "./connection.js";
+import adminAPI from "./routes/admin.js";
 import userAPI from "./routes/user.js";
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/v1/user", userAPI);
+app.use("/api/v1/admin", adminAPI);
 
 app.get("/", (_req, res) => {
   res.send("xin chào từ phía server");

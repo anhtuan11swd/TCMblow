@@ -9,6 +9,7 @@ import AddBlog from "./pages/AddBlog";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import AllBlogs from "./pages/AllBlogs";
+import CategoryManager from "./pages/CategoryManager";
 import CategoryPage from "./pages/CategoryPage";
 import Description from "./pages/Description";
 import EditBlogs from "./pages/EditBlogs";
@@ -84,6 +85,7 @@ function App() {
       <Route element={<AdminLayout />} path="admin-dashboard">
         <Route element={<AdminDashboard />} index />
         <Route element={<AddBlog />} path="add-blogs" />
+        <Route element={<CategoryManager />} path="categories" />
         <Route element={<EditBlogs />} path="edit-blogs" />
         <Route element={<UpdateBlog />} path="update-blog/:id" />
       </Route>
