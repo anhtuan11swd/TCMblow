@@ -1,5 +1,6 @@
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import Blog from "../models/Blog.js";
 import User from "../models/User.js";
 
 export const checkCookie = async (req, res) => {
@@ -145,7 +146,21 @@ export const getProfileData = async (req, res) => {
 
     const { password, ...safeUserData } = user.toObject();
 
-    return res.status(200).json({ user: safeUserData });
+    // Thêm số lượng favorite và liked blogs
+    const favoriteBlogsCount = user.favoriteBlogs?.length || 0;
+    const likedBlogsCount = user.likedBlogs?.length || 0;
+
+    // Đếm tổng số bài viết mà user đã tạo
+    const totalBlogsCount = await Blog.countDocuments({ author: user._id });
+
+    return res.status(200).json({
+      user: {
+        ...safeUserData,
+        favoriteBlogsCount,
+        likedBlogsCount,
+        totalBlogsCount,
+      },
+    });
   } catch (_error) {
     return res.status(500).json({ message: "Lỗi server" });
   }

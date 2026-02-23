@@ -12,6 +12,18 @@ const userSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
+    favoriteBlogs: [
+      {
+        ref: "Blog",
+        type: mongoose.Schema.Types.ObjectId,
+      },
+    ],
+    likedBlogs: [
+      {
+        ref: "Blog",
+        type: mongoose.Schema.Types.ObjectId,
+      },
+    ],
     password: {
       minlength: 6,
       required: [true, "mật khẩu là bắt buộc"],

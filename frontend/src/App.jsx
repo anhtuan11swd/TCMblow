@@ -48,9 +48,10 @@ function App() {
       <Route element={<MainLayout />} path="/">
         <Route element={<Home />} index />
         <Route element={<AllBlogs />} path="blogs" />
-        <Route element={<CategoryPage />} path="category/:categoryId" />
+        <Route element={<CategoryPage />} path="cat/:categoryId" />
 
         {/* Routes cho từng danh mục cụ thể */}
+        {/* Các routes này giữ lại để tương thích ngược */}
         <Route element={<CategoryPage />} path="dsa" />
         <Route element={<CategoryPage />} path="ds" />
         <Route element={<CategoryPage />} path="nextjs" />

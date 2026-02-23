@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import express from "express";
 import connectDB from "./connection.js";
 import adminAPI from "./routes/admin.js";
+import blogsAPI from "./routes/blogs.js";
 import userAPI from "./routes/user.js";
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
+app.use("/api/v1/blogs", blogsAPI);
 app.use("/api/v1/user", userAPI);
 app.use("/api/v1/admin", adminAPI);
 

@@ -15,6 +15,12 @@ const blogSchema = new mongoose.Schema(
       required: [true, "mô tả là bắt buộc"],
       type: String,
     },
+    favoriteBlogsByUser: [
+      {
+        ref: "User",
+        type: mongoose.Schema.Types.ObjectId,
+      },
+    ],
     image: {
       type: String,
     },

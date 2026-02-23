@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,6 +11,11 @@ const DashboardProfile = () => {
 
   // State quản lý dữ liệu người dùng
   const [userData, setUserData] = useState(null);
+  const [stats, setStats] = useState({
+    favoriteBlogsCount: 0,
+    likedBlogsCount: 0,
+    totalBlogsCount: 0,
+  });
 
   // State quản lý ảnh đại diện đang chọn (file object)
   const [changeAvatar, setChangeAvatar] = useState(null);
@@ -32,23 +37,44 @@ const DashboardProfile = () => {
     new: false,
   });
 
+  // Hàm fetch dữ liệu profile
+  const fetchProfileData = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `${backendLink}/api/v1/user/get-profile-data`,
+        { withCredentials: true },
+      );
+      // Backend trả về { user: safeUserData }
+      const userData = response.data.user;
+      setUserData(userData);
+
+      // Cập nhật số lượng từ API response
+      setStats({
+        favoriteBlogsCount: userData.favoriteBlogsCount || 0,
+        likedBlogsCount: userData.likedBlogsCount || 0,
+        totalBlogsCount: userData.totalBlogsCount || 0,
+      });
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu profile:", error);
+    }
+  }, [backendLink]);
+
   // Gọi API lấy dữ liệu profile khi component mount
   useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const response = await axios.get(
-          `${backendLink}/api/v1/user/get-profile-data`,
-          { withCredentials: true },
-        );
-        // Backend trả về { user: safeUserData }
-        setUserData(response.data.user);
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu profile:", error);
-      }
+    fetchProfileData();
+  }, [fetchProfileData]);
+
+  // Refresh stats khi trang được focus lại (khi người dùng quay lại từ trang khác)
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchProfileData();
     };
 
-    fetchProfileData();
-  }, [backendLink]);
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [fetchProfileData]);
 
   // Handle avatar change
   const handleAvatarChange = (event) => {
@@ -242,7 +268,9 @@ const DashboardProfile = () => {
             </div>
             <div>
               <p className="text-zinc-500 text-sm">Bài viết đã lưu</p>
-              <p className="font-bold text-zinc-900 text-2xl">0</p>
+              <p className="font-bold text-zinc-900 text-2xl">
+                {stats.favoriteBlogsCount}
+              </p>
             </div>
           </div>
         </div>
@@ -266,7 +294,9 @@ const DashboardProfile = () => {
             </div>
             <div>
               <p className="text-zinc-500 text-sm">Bài viết đã thích</p>
-              <p className="font-bold text-zinc-900 text-2xl">0</p>
+              <p className="font-bold text-zinc-900 text-2xl">
+                {stats.likedBlogsCount}
+              </p>
             </div>
           </div>
         </div>
@@ -291,7 +321,9 @@ const DashboardProfile = () => {
             </div>
             <div>
               <p className="text-zinc-500 text-sm">Tổng số bài viết</p>
-              <p className="font-bold text-zinc-900 text-2xl">0</p>
+              <p className="font-bold text-zinc-900 text-2xl">
+                {stats.totalBlogsCount}
+              </p>
             </div>
           </div>
         </div>
