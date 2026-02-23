@@ -21,7 +21,7 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
-app.use("/api/v1", userAPI);
+app.use("/api/v1/user", userAPI);
 
 app.get("/", (_req, res) => {
   res.send("xin chào từ phía server");

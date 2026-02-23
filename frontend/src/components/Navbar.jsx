@@ -1,17 +1,27 @@
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { RxCross1 } from "react-icons/rx";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
 
-  const links = [
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
+  const guestLinks = [
+    { name: "Trang chủ", path: "/" },
+    { name: "Tất cả bài viết", path: "/blogs" },
+    { name: "Đăng nhập", path: "/login" },
+  ];
+
+  const userLinks = [
     { name: "Trang chủ", path: "/" },
     { name: "Tất cả bài viết", path: "/blogs" },
     { name: "Hồ sơ", path: "/profile" },
-    { name: "Đăng nhập", path: "/login" },
   ];
+
+  const links = isLoggedIn ? userLinks : guestLinks;
 
   return (
     <nav className="top-0 right-0 left-0 z-50 fixed bg-white border-gray-200 border-b">
@@ -36,12 +46,14 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            <Link
-              className="bg-black hover:bg-gray-800 px-5 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 text-white transition-colors duration-300 cursor-pointer"
-              to="/signup"
-            >
-              Đăng ký
-            </Link>
+            {!isLoggedIn && (
+              <Link
+                className="bg-black hover:bg-gray-800 px-5 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 text-white transition-colors duration-300 cursor-pointer"
+                to="/signup"
+              >
+                Đăng ký
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -80,13 +92,15 @@ const Navbar = () => {
               {link.name}
             </Link>
           ))}
-          <Link
-            className="bg-black hover:bg-gray-800 mt-4 px-8 py-3.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 w-full max-w-xs min-h-[48px] text-white text-center transition-colors duration-300 cursor-pointer"
-            onClick={() => setMobileMenu(false)}
-            to="/signup"
-          >
-            Đăng ký
-          </Link>
+          {!isLoggedIn && (
+            <Link
+              className="bg-black hover:bg-gray-800 mt-4 px-8 py-3.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 w-full max-w-xs min-h-[48px] text-white text-center transition-colors duration-300 cursor-pointer"
+              onClick={() => setMobileMenu(false)}
+              to="/signup"
+            >
+              Đăng ký
+            </Link>
+          )}
         </div>
       </div>
     </nav>

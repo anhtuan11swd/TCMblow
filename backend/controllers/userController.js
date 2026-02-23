@@ -2,6 +2,31 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
+export const checkCookie = async (req, res) => {
+  try {
+    const token = req.cookies.blogsAppTCM;
+    if (token) {
+      return res.status(200).json({ valid: true });
+    }
+    return res.status(200).json({ valid: false });
+  } catch (_error) {
+    return res.status(200).json({ valid: false });
+  }
+};
+
+export const logoutUser = async (_req, res) => {
+  try {
+    res.clearCookie("blogsAppTCM", {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+    });
+    return res.status(200).json({ message: "Đăng xuất thành công" });
+  } catch (_error) {
+    return res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
 export const signupUser = async (req, res) => {
   try {
     const { email, password, username } = req.body;
@@ -12,10 +37,24 @@ export const signupUser = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    // Validate password length
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "Mật khẩu phải có ít nhất 6 ký tự",
+      });
+    }
+
+    // Validate username length
+    if (username.length < 3) {
+      return res.status(400).json({
+        message: "Tên người dùng phải có ít nhất 3 ký tự",
+      });
+    }
+
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
-        message: "Tên người dùng hoặc email đã tồn tại",
+        message: "Email đã tồn tại",
       });
     }
 
@@ -34,6 +73,7 @@ export const signupUser = async (req, res) => {
       message: "Tài khoản đã được tạo",
     });
   } catch (error) {
+    console.error("Signup error:", error);
     res.status(500).json({
       error: error.message,
       message: "lỗi server",
@@ -71,11 +111,11 @@ export const loginUser = async (req, res) => {
       { expiresIn: "30d" },
     );
 
-    res.cookie("token", token, {
+    res.cookie("blogsAppTCM", token, {
       httpOnly: true,
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
     });
 
     res.status(200).json({

@@ -1,3 +1,6 @@
+import axios from "axios";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import AdminLayout from "./layout/AdminLayout";
 import MainLayout from "./layout/MainLayout";
@@ -17,8 +20,27 @@ import Favorites from "./pages/profile/Favorites";
 import LikedBlogs from "./pages/profile/LikedBlogs";
 import Signup from "./pages/Signup";
 import UpdateBlog from "./pages/UpdateBlog";
+import { login } from "./store/auth";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const checkCookie = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:1000/api/v1/user/check-cookie",
+          { withCredentials: true },
+        );
+        if (response.data.valid) {
+          dispatch(login());
+        }
+      } catch (error) {
+        console.error("Lỗi kiểm tra cookie:", error);
+      }
+    };
+    checkCookie();
+  }, [dispatch]);
   return (
     <Routes>
       {/* Main Layout Routes - với Navbar và Footer */}

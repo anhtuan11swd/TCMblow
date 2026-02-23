@@ -1,9 +1,11 @@
 import axios from "axios";
 import { useState } from "react";
 import { FaEye, FaEyeSlash, FaHome } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { login } from "../store/auth";
 
 const Login = () => {
   const [inputs, setInputs] = useState({
@@ -14,6 +16,9 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const backendLink = useSelector((state) => state.production.link);
 
   const change = (e) => {
     const { name, value } = e.target;
@@ -23,9 +28,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:1000/api/v1/login", inputs, {
+      await axios.post(`${backendLink}/api/v1/user/login`, inputs, {
         withCredentials: true,
       });
+      dispatch(login());
       toast.success("Đăng nhập thành công!");
       setTimeout(() => {
         navigate("/profile");

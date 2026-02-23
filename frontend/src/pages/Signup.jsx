@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { FaEye, FaEyeSlash, FaHome } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,6 +17,8 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
+  const backendLink = useSelector((state) => state.production.link);
+
   const change = (e) => {
     const { name, value } = e.target;
     setInputs({ ...inputs, [name]: value });
@@ -24,7 +27,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:1000/api/v1/signup", inputs, {
+      await axios.post(`${backendLink}/api/v1/user/signup`, inputs, {
         withCredentials: true,
       });
       toast.success("Đăng ký thành công!");

@@ -24,7 +24,6 @@ const userSchema = new mongoose.Schema(
       required: [true, "tên người dùng là bắt buộc"],
       trim: true,
       type: String,
-      unique: true,
     },
   },
   {

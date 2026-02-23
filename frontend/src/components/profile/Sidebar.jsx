@@ -1,4 +1,7 @@
-import { NavLink } from "react-router-dom";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
+import { logout } from "../../store/auth";
 
 const sidebarLinks = [
   {
@@ -64,9 +67,21 @@ const sidebarLinks = [
 ];
 
 const Sidebar = ({ closeSideBar }) => {
-  const handleLogout = () => {
-    console.log("Đăng xuất...");
-    // Thêm logic đăng xuất tại đây
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:1000/api/v1/user/logout",
+        {},
+        { withCredentials: true },
+      );
+      dispatch(logout());
+      navigate("/");
+    } catch (error) {
+      console.error("Lỗi đăng xuất:", error);
+    }
   };
 
   return (
